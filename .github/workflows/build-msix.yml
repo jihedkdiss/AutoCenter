@@ -29,12 +29,12 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Setup .NET
-        uses: actions/setup-dotnet@v4
+        uses: actions/setup-dotnet@v5
         with:
           dotnet-version: '8.0.x'
 
       - name: Setup MSBuild
-        uses: microsoft/setup-msbuild@v2
+        uses: microsoft/setup-msbuild@v3
 
       - name: Extract app version
         shell: pwsh
@@ -92,14 +92,14 @@ jobs:
 
       - name: Upload GitHub Release artifact
         if: matrix.configuration == 'GitHub Release'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: AutoCenter_${{ env.APP_VERSION }}_${{ env.PLATFORM }}_Installer
           path: InstallerOutput\
 
       - name: Upload Store artifact
         if: matrix.configuration == 'Release'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: AutoCenter_${{ env.APP_VERSION }}_${{ env.PLATFORM }}_Release
           path: ${{ steps.locate.outputs.path }}
