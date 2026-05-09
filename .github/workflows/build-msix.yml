@@ -9,11 +9,14 @@ on:
       - 'AutoCenter/Package.appxmanifest'
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   build:
     runs-on: windows-latest
+
+    outputs:
+      app_version: ${{ steps.extract_version.outputs.version }}
 
     strategy:
       matrix:
@@ -37,12 +40,14 @@ jobs:
         uses: microsoft/setup-msbuild@v3
 
       - name: Extract app version
+        id: extract_version
         shell: pwsh
         run: |
           [xml]$manifest = Get-Content 'AutoCenter\Package.appxmanifest'
           $fullVersion = $manifest.Package.Identity.Version
           $version = ($fullVersion -split '\.')[0..2] -join '.'
           "APP_VERSION=$version" | Out-File -FilePath $env:GITHUB_ENV -Append
+          "version=$version" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
 
       - name: Import signing certificate (GitHub Release only)
         if: matrix.configuration == 'GitHub Release'
@@ -80,6 +85,10 @@ jobs:
           Copy-Item ".github\build-files\AutoCenter_Installer.bat" "$outDir\"
           Copy-Item ".github\build-files\Install-AutoCenter.ps1" "$outDir\"
           Copy-Item ".github\build-files\README.txt" "$outDir\"
+          $zipName = "AutoCenter_${env:APP_VERSION}_${env:PLATFORM}_Installer.zip"
+          $zipPath = "$env:GITHUB_WORKSPACE\release-asset\$zipName"
+          New-Item -ItemType Directory -Path "$env:GITHUB_WORKSPACE\release-asset" | Out-Null
+          Compress-Archive -Path "$outDir\*" -DestinationPath $zipPath
 
       - name: Locate Store .msixupload
         if: matrix.configuration == 'Release'
@@ -88,18 +97,73 @@ jobs:
         run: |
           $upload = Get-ChildItem -Path AppxPackages -Recurse -Filter *.msixupload | Select-Object -First 1
           if (-not $upload) { throw "No .msixupload produced" }
+          $stagedDir = "$env:GITHUB_WORKSPACE\release-asset"
+          New-Item -ItemType Directory -Path $stagedDir | Out-Null
+          Copy-Item $upload.FullName $stagedDir
           "path=$($upload.FullName)" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
 
-      - name: Upload GitHub Release artifact
+      - name: Upload GitHub Release artifact (free installer)
         if: matrix.configuration == 'GitHub Release'
         uses: actions/upload-artifact@v7
         with:
-          name: AutoCenter_${{ env.APP_VERSION }}_${{ env.PLATFORM }}_Installer
-          path: InstallerOutput\
+          name: free-installer
+          path: release-asset\AutoCenter_${{ env.APP_VERSION }}_${{ env.PLATFORM }}_Installer.zip
+          if-no-files-found: error
 
-      - name: Upload Store artifact
+      - name: Upload Store artifact (premium .msixupload)
         if: matrix.configuration == 'Release'
         uses: actions/upload-artifact@v7
         with:
-          name: AutoCenter_${{ env.APP_VERSION }}_${{ env.PLATFORM }}_Release
-          path: ${{ steps.locate.outputs.path }}
+          name: store-msixupload
+          path: release-asset\*.msixupload
+          if-no-files-found: error
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    env:
+      APP_VERSION: ${{ needs.build.outputs.app_version }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Download free installer
+        uses: actions/download-artifact@v8
+        with:
+          name: free-installer
+          path: release-assets
+
+      - name: Download Store package
+        uses: actions/download-artifact@v8
+        with:
+          name: store-msixupload
+          path: release-assets
+
+      - name: List release assets
+        run: ls -la release-assets
+
+      - name: Create or update GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          TAG="v${APP_VERSION}"
+          NOTES_FILE="$(mktemp)"
+          cat > "$NOTES_FILE" <<EOF
+          ## Auto Center v${APP_VERSION}
+
+          Two artifacts are attached to this release:
+
+          - **\`AutoCenter_${APP_VERSION}_x64_Installer.zip\`** — sideload installer for end users. Unzip and run \`AutoCenter_Installer.bat\` (see \`README.txt\` inside).
+          - **\`*.msixupload\`** — Microsoft Store submission package. For maintainer use only; uploaded to Partner Center for Store review.
+          EOF
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            echo "Release $TAG exists; uploading assets with --clobber"
+            gh release upload "$TAG" release-assets/* --clobber
+          else
+            echo "Creating release $TAG"
+            gh release create "$TAG" release-assets/* \
+              --title "Auto Center v${APP_VERSION}" \
+              --notes-file "$NOTES_FILE"
+          fi

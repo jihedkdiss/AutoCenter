@@ -6,6 +6,11 @@ updates:
     directory: "/AutoCenter/"
     schedule:
       interval: "weekly"
+    ignore:
+      # Major bumps change WinUI 3 deprecations & MSIX package family identity.
+      # Upgrade deliberately, not via auto-PR.
+      - dependency-name: "Microsoft.WindowsAppSDK"
+        update-types: ["version-update:semver-major"]
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
