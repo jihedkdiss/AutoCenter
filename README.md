@@ -1,4 +1,14 @@
+<p align="center">
+  <img src="AutoCenter/Assets/Square150x150Logo.scale-200.png" alt="Auto Center logo" width="128" />
+</p>
+
 <h1 align="center">Auto Center</h1>
+
+<p align="center">
+  <a href="https://apps.microsoft.com/detail/9NJBD74TXX5B?referrer=appbadge&cid=GitHub_README&mode=direct">
+    <img alt="Download from Microsoft Store" src="https://get.microsoft.com/images/en-us%20dark.svg" width="200" />
+  </a>
+</p>
 
 <p align="center">
   <a href="https://github.com/jihedkdiss/AutoCenter/releases/latest"><img alt="GitHub Release" src="https://img.shields.io/github/v/release/jihedkdiss/AutoCenter?display_name=tag&color=1E4ED7"></a>
@@ -8,17 +18,7 @@
   <a href="https://jihedkdiss.github.io/AutoCenter/"><img alt="Website" src="https://img.shields.io/badge/website-jihedkdiss.github.io%2FAutoCenter-2ea043"></a>
 </p>
 
----
-
 Auto Center is a lightweight Windows utility that automatically centers and resizes windows on your monitors. Built with **WinUI 3** and **.NET 8**, the UI blends in with Windows 11 and stays out of your way until you need it.
-
-<a href="https://apps.microsoft.com/detail/9NJBD74TXX5B?referrer=appbadge&cid=GitHub_README&mode=direct">
-  <img src="https://get.microsoft.com/images/en-us%20dark.svg" width="200"/>
-</a>
-
-<p align="center">
-  <img src="docs/images/placement-settings-showcase.png" alt="Auto Center on Windows 11" width="80%" />
-</p>
 
 ## Features ✨
 - **Auto-center new windows** — newly focused windows are automatically centered
@@ -33,6 +33,10 @@ Auto Center is a lightweight Windows utility that automatically centers and resi
 - **Native Windows-like design** — WinUI 3 with light/dark theme support
 
 ## Screenshots 🖼️
+
+<p align="center">
+  <img src="docs/images/placement-settings-showcase.png" alt="Auto Center on Windows 11" width="80%" />
+</p>
 
 <table>
   <tr>
@@ -66,9 +70,11 @@ The **GitHub version** is completely free, fully featured, and open-source — b
 Read more in the [Sustainability & The Microsoft Store](#sustainability--the-microsoft-store-) section below.
 
 ### Using Microsoft Store
-<a href="https://apps.microsoft.com/detail/9NJBD74TXX5B?referrer=appbadge&cid=GitHub_README_2&mode=direct">
-  <img src="https://get.microsoft.com/images/en-us%20dark.svg" width="300"/>
-</a>
+<p align="center">
+  <a href="https://apps.microsoft.com/detail/9NJBD74TXX5B?referrer=appbadge&cid=GitHub_README_2&mode=direct">
+    <img alt="Download from Microsoft Store" src="https://get.microsoft.com/images/en-us%20dark.svg" width="300" />
+  </a>
+</p>
 
 > Looking for Auto Center settings? You can access them by clicking the system-tray icon.
 
