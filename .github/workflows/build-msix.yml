@@ -92,14 +92,14 @@ jobs:
 
       - name: Upload GitHub Release artifact
         if: matrix.configuration == 'GitHub Release'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: AutoCenter_${{ env.APP_VERSION }}_${{ env.PLATFORM }}_Installer
           path: InstallerOutput\
 
       - name: Upload Store artifact
         if: matrix.configuration == 'Release'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: AutoCenter_${{ env.APP_VERSION }}_${{ env.PLATFORM }}_Release
           path: ${{ steps.locate.outputs.path }}
