@@ -72,17 +72,18 @@ Read more in the [Sustainability & The Microsoft Store](#sustainability--the-mic
 
 > Looking for Auto Center settings? You can access them by clicking the system-tray icon.
 
-### Using .msixbundle installer
+### Using the GitHub installer
 1. Go to the [latest release](https://github.com/jihedkdiss/AutoCenter/releases/latest) page
-2. Download the **`*.cer`** file *(real certificates cost money)*
-3. Open the certificate and press **"Install Certificate..."**
-4. On the Certificate Import Wizard, select **"Local Machine"**, press **"Next"** and grant Admin Access
-5. Select **"Place all certificates in the following store"**, then **"Browse..."**, choose **"Trusted Root Certification Authorities"** and **"OK"**
-6. Press **"Next"** and then **"Finish"**. Confirm if prompted
-7. Download the **`*.msixbundle`** file
-8. The App Installer will pop up — press **"Install"** (or **"Update"** if you've installed Auto Center before)
+2. Download **`AutoCenter_<version>_x64_Installer.zip`**
+3. Extract the archive
+4. Run **`AutoCenter_Installer.bat`** — it installs the signing certificate to *Trusted Root* (Admin prompt) and runs the App Installer for the bundled `.msixbundle`
 
-Alternatively, download the `Installer` artifact from the [latest release](https://github.com/jihedkdiss/AutoCenter/releases/latest) and run `AutoCenter_Installer.bat`, which automates steps 2–8 above.
+Prefer to do it by hand? Open `SystemFiles\` inside the extracted zip:
+1. Double-click the **`*.cer`** file *(real certificates cost money)* and press **"Install Certificate..."**
+2. On the Certificate Import Wizard, select **"Local Machine"**, press **"Next"** and grant Admin Access
+3. Select **"Place all certificates in the following store"**, then **"Browse..."**, choose **"Trusted Root Certification Authorities"** and **"OK"**
+4. Press **"Next"** and then **"Finish"**. Confirm if prompted
+5. Double-click the **`*.msixbundle`** file — the App Installer will pop up; press **"Install"** (or **"Update"** if you've installed Auto Center before)
 
 ## Requirements
 - Windows 10 version 1809 (build 17763) or later
@@ -119,7 +120,7 @@ msbuild AutoCenter\AutoCenter.csproj `
   /p:GenerateAppxPackageOnBuild=true
 ```
 
-CI (`.github/workflows/build-msix.yml`) produces both artifacts on every change to `Package.appxmanifest`.
+CI (`.github/workflows/build-msix.yml`) builds both configurations on every change to `Package.appxmanifest` (or via `workflow_dispatch`) and publishes a GitHub Release tagged `v<version>` with the free installer `.zip` and the Store `.msixupload` attached.
 
 Identity values used in `Package.appxmanifest` come from Partner Center → App management → Product identity. To regenerate the tile/Store PNG asset set from the source art:
 ```
