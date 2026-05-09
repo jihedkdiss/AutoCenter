@@ -1,0 +1,909 @@
+<Window
+    x:Class="AutoCenter.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:tk="using:CommunityToolkit.WinUI.Controls"
+    mc:Ignorable="d"
+    Title="Auto Center">
+
+    <Grid x:Name="RootGrid" Background="Transparent">
+        <Grid.Resources>
+            <Style x:Key="PageTitleStyle" TargetType="TextBlock">
+                <Setter Property="FontSize" Value="28" />
+                <Setter Property="FontWeight" Value="SemiBold" />
+                <Setter Property="Margin" Value="0,0,0,16" />
+                <Setter Property="Foreground" Value="{ThemeResource TextFillColorPrimaryBrush}" />
+            </Style>
+
+            <Style x:Key="GroupHeaderStyle" TargetType="TextBlock" BasedOn="{StaticResource BodyStrongTextBlockStyle}">
+                <Setter Property="Margin" Value="1,16,0,4" />
+            </Style>
+
+            <Style x:Key="MutedTextStyle" TargetType="TextBlock">
+                <Setter Property="Foreground" Value="{ThemeResource TextFillColorSecondaryBrush}" />
+                <Setter Property="TextWrapping" Value="Wrap" />
+            </Style>
+        </Grid.Resources>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="48" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <Grid x:Name="AppTitleBar" Padding="16,0,144,0" ColumnSpacing="10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Image Width="18" Height="18" VerticalAlignment="Center" Source="ms-appx:///Assets/AutoCenter.ico" />
+            <TextBlock Grid.Column="1" Text="Auto Center" VerticalAlignment="Center" FontWeight="SemiBold" Style="{ThemeResource CaptionTextBlockStyle}" />
+        </Grid>
+
+        <NavigationView
+            Grid.Row="1"
+            x:Name="ShellNavigation"
+            PaneDisplayMode="Left"
+            IsBackButtonVisible="Collapsed"
+            IsBackEnabled="False"
+            IsSettingsVisible="True"
+            CompactPaneLength="48"
+            OpenPaneLength="200"
+            SelectionChanged="OnShellNavigationSelectionChanged">
+            <NavigationView.MenuItems>
+                <NavigationViewItem x:Name="HomeNavigationItem" Content="Home" Tag="home" IsSelected="True">
+                    <NavigationViewItem.Icon>
+                        <FontIcon Glyph="&#xE80F;" />
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
+                <NavigationViewItem x:Name="GeneralNavigationItem" Content="General" Tag="general">
+                    <NavigationViewItem.Icon>
+                        <FontIcon Glyph="&#xE713;" />
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
+                <NavigationViewItem x:Name="PlacementNavigationItem" Content="Placement" Tag="placement">
+                    <NavigationViewItem.Icon>
+                        <FontIcon Glyph="&#xE8B9;" />
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
+                <NavigationViewItem x:Name="DisplaysNavigationItem" Content="Displays" Tag="displays">
+                    <NavigationViewItem.Icon>
+                        <FontIcon Glyph="&#xE7F8;" />
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
+                <NavigationViewItem x:Name="HotkeyNavigationItem" Content="Hotkey" Tag="hotkey">
+                    <NavigationViewItem.Icon>
+                        <FontIcon Glyph="&#xE92E;" />
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
+                <NavigationViewItem x:Name="AdvancedNavigationItem" Content="Advanced" Tag="advanced">
+                    <NavigationViewItem.Icon>
+                        <FontIcon Glyph="&#xEC7A;" />
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
+            </NavigationView.MenuItems>
+
+            <NavigationView.FooterMenuItems>
+                <NavigationViewItem Content="About" Tag="about">
+                    <NavigationViewItem.Icon>
+                        <FontIcon Glyph="&#xE946;" />
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
+            </NavigationView.FooterMenuItems>
+
+            <Border Background="{ThemeResource LayerFillColorDefaultBrush}"
+                    BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                    BorderThickness="1,1,0,0"
+                    CornerRadius="8,0,0,0">
+                <Grid>
+
+                    <ScrollViewer x:Name="HomePage" VerticalScrollBarVisibility="Auto" HorizontalScrollMode="Disabled" HorizontalScrollBarVisibility="Disabled" Padding="36,28,36,28">
+                        <Grid HorizontalAlignment="Stretch">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="100*" MaxWidth="1000" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="1" HorizontalAlignment="Stretch" Spacing="3">
+                            <StackPanel HorizontalAlignment="Center" Spacing="8" Margin="0,8,0,28">
+                                <Image Source="ms-appx:///Assets/Square310x310Logo.png" Width="120" Height="120" HorizontalAlignment="Center" />
+                                <StackPanel Orientation="Horizontal" Spacing="10" HorizontalAlignment="Center" VerticalAlignment="Bottom">
+                                    <TextBlock Text="Auto Center" Style="{StaticResource PageTitleStyle}" Margin="0" />
+                                    <TextBlock x:Name="HomeVersionText" Style="{StaticResource MutedTextStyle}" VerticalAlignment="Bottom" Margin="0,0,0,8" FontSize="14" />
+                                </StackPanel>
+                                <TextBlock Text="A lightweight utility that automatically centers and resizes windows on your monitors."
+                                           Style="{StaticResource MutedTextStyle}"
+                                           HorizontalAlignment="Center"
+                                           TextAlignment="Center"
+                                           MaxWidth="560" />
+                            </StackPanel>
+
+                            <StackPanel Orientation="Horizontal" Spacing="10" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,0,8">
+                                <Button Click="OnCenterAllClick" MinWidth="160">
+                                    <StackPanel Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+                                        <FontIcon Glyph="&#xE8B9;" FontSize="14" FontFamily="{ThemeResource SymbolThemeFontFamily}" />
+                                        <TextBlock Text="Center all windows" VerticalAlignment="Center" />
+                                    </StackPanel>
+                                </Button>
+                                <TextBlock x:Name="CenterAllFeedback"
+                                           Style="{ThemeResource CaptionTextBlockStyle}"
+                                           Foreground="{ThemeResource SystemFillColorSuccessBrush}"
+                                           Visibility="Collapsed"
+                                           VerticalAlignment="Center" />
+                            </StackPanel>
+
+                            <TextBlock Text="Dashboard" Style="{StaticResource GroupHeaderStyle}" />
+                            <Grid ColumnSpacing="8" RowSpacing="8">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+
+                                <tk:SettingsCard Grid.Row="0" Grid.Column="0"
+                                                 Header="General"
+                                                 Description="Auto-center toggle &amp; hotkey"
+                                                 IsClickEnabled="True"
+                                                 Tag="general"
+                                                 Click="OnDashboardCardClick">
+                                    <tk:SettingsCard.HeaderIcon>
+                                        <FontIcon Glyph="&#xE10F;" />
+                                    </tk:SettingsCard.HeaderIcon>
+                                </tk:SettingsCard>
+
+                                <tk:SettingsCard Grid.Row="0" Grid.Column="1"
+                                                 Header="Placement"
+                                                 Description="Sizing &amp; alignment"
+                                                 IsClickEnabled="True"
+                                                 Tag="placement"
+                                                 Click="OnDashboardCardClick">
+                                    <tk:SettingsCard.HeaderIcon>
+                                        <FontIcon Glyph="&#xE8B9;" />
+                                    </tk:SettingsCard.HeaderIcon>
+                                </tk:SettingsCard>
+
+                                <tk:SettingsCard Grid.Row="1" Grid.Column="0"
+                                                 Header="Displays"
+                                                 Description="Multi-monitor target"
+                                                 IsClickEnabled="True"
+                                                 Tag="displays"
+                                                 Click="OnDashboardCardClick">
+                                    <tk:SettingsCard.HeaderIcon>
+                                        <FontIcon Glyph="&#xE7F8;" />
+                                    </tk:SettingsCard.HeaderIcon>
+                                </tk:SettingsCard>
+
+                                <tk:SettingsCard Grid.Row="1" Grid.Column="1"
+                                                 Header="Hotkey"
+                                                 Description="Configure global shortcut"
+                                                 IsClickEnabled="True"
+                                                 Tag="hotkey"
+                                                 Click="OnDashboardCardClick">
+                                    <tk:SettingsCard.HeaderIcon>
+                                        <FontIcon Glyph="&#xE92E;" />
+                                    </tk:SettingsCard.HeaderIcon>
+                                </tk:SettingsCard>
+
+                                <tk:SettingsCard Grid.Row="2" Grid.Column="0"
+                                                 Header="Advanced"
+                                                 Description="Polling &amp; behavior tweaks"
+                                                 IsClickEnabled="True"
+                                                 Tag="advanced"
+                                                 Click="OnDashboardCardClick">
+                                    <tk:SettingsCard.HeaderIcon>
+                                        <FontIcon Glyph="&#xEC7A;" />
+                                    </tk:SettingsCard.HeaderIcon>
+                                </tk:SettingsCard>
+
+                                <tk:SettingsCard Grid.Row="2" Grid.Column="1"
+                                                 Header="App settings"
+                                                 Description="Theme, startup, reset"
+                                                 IsClickEnabled="True"
+                                                 Tag="settings"
+                                                 Click="OnDashboardCardClick">
+                                    <tk:SettingsCard.HeaderIcon>
+                                        <FontIcon Glyph="&#xE713;" />
+                                    </tk:SettingsCard.HeaderIcon>
+                                </tk:SettingsCard>
+                            </Grid>
+
+                            <StackPanel Orientation="Horizontal" Spacing="6" Margin="0,20,0,4" HorizontalAlignment="Center">
+                                <Button Click="OnOpenStoreClick" Style="{ThemeResource SubtleButtonStyle}" MinWidth="120" Padding="12,10">
+                                    <StackPanel Orientation="Vertical" Spacing="4" HorizontalAlignment="Center">
+                                        <FontIcon Glyph="&#xE7B8;" FontSize="20" />
+                                        <TextBlock Text="Microsoft Store" FontSize="12" />
+                                    </StackPanel>
+                                </Button>
+                                <Button Click="OnViewLogsClick" Style="{ThemeResource SubtleButtonStyle}" MinWidth="120" Padding="12,10">
+                                    <StackPanel Orientation="Vertical" Spacing="4" HorizontalAlignment="Center">
+                                        <FontIcon Glyph="&#xE8B7;" FontSize="20" />
+                                        <TextBlock Text="View logs" FontSize="12" />
+                                    </StackPanel>
+                                </Button>
+                                <Button Click="OnReportBugClick" Style="{ThemeResource SubtleButtonStyle}" MinWidth="120" Padding="12,10">
+                                    <StackPanel Orientation="Vertical" Spacing="4" HorizontalAlignment="Center">
+                                        <FontIcon Glyph="&#xEBE8;" FontSize="20" />
+                                        <TextBlock Text="Report bug" FontSize="12" />
+                                    </StackPanel>
+                                </Button>
+                            </StackPanel>
+
+                            <TextBlock Text="About" Style="{StaticResource GroupHeaderStyle}" />
+                            <InfoBar IsOpen="True" IsClosable="False" Severity="Informational"
+                                     Message="All features are available in both Microsoft Store and GitHub versions. Buying the Store version supports ongoing development and gives you automatic updates." />
+
+                            <StackPanel Orientation="Horizontal" Spacing="8" Margin="0,12,0,0">
+                                <Button Click="OnSponsorClick">
+                                    <StackPanel Orientation="Horizontal" Spacing="6">
+                                        <FontIcon Glyph="&#xEB52;" FontSize="14" />
+                                        <TextBlock Text="Sponsor me" />
+                                    </StackPanel>
+                                </Button>
+                            </StackPanel>
+
+                            <Grid Margin="0,28,0,0" ColumnSpacing="12">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+                                    <FontIcon Glyph="&#xE735;" FontSize="14" Foreground="{ThemeResource SystemFillColorAttentionBrush}" />
+                                    <TextBlock TextWrapping="Wrap" Style="{StaticResource MutedTextStyle}" Text="Enjoying the app? Star it on GitHub, or leave a review on Microsoft Store!" />
+                                </StackPanel>
+                                <Button Grid.Column="1" Click="OnGitHubRepoClick">
+                                    <StackPanel Orientation="Horizontal" Spacing="6">
+                                        <FontIcon Glyph="&#xE71B;" FontSize="14" />
+                                        <TextBlock Text="GitHub Repository" />
+                                    </StackPanel>
+                                </Button>
+                            </Grid>
+                        </StackPanel>
+                        </Grid>
+                    </ScrollViewer>
+
+                    <ScrollViewer x:Name="GeneralPage" Visibility="Collapsed" VerticalScrollBarVisibility="Auto" HorizontalScrollMode="Disabled" HorizontalScrollBarVisibility="Disabled" Padding="36,28,36,28">
+                        <Grid HorizontalAlignment="Stretch">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="100*" MaxWidth="1000" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="1" HorizontalAlignment="Stretch" Spacing="3">
+                            <TextBlock Text="General" Style="{StaticResource PageTitleStyle}" />
+
+                            <tk:SettingsCard Header="Auto-center new windows"
+                                             Description="Automatically center newly focused windows on the configured monitor.">
+                                <tk:SettingsCard.HeaderIcon>
+                                    <FontIcon Glyph="&#xE8B9;" />
+                                </tk:SettingsCard.HeaderIcon>
+                                <ToggleSwitch x:Name="AutoCenterToggle" Toggled="OnSettingChanged" />
+                            </tk:SettingsCard>
+
+                            <tk:SettingsCard Header="Global hotkey"
+                                             Description="Trigger centering instantly with a keyboard shortcut.">
+                                <tk:SettingsCard.HeaderIcon>
+                                    <FontIcon Glyph="&#xE92E;" />
+                                </tk:SettingsCard.HeaderIcon>
+                                <ToggleSwitch x:Name="HotkeyToggle" Toggled="OnSettingChanged" />
+                            </tk:SettingsCard>
+
+                            <TextBlock Text="Application" Style="{StaticResource GroupHeaderStyle}" />
+
+                            <tk:SettingsCard Header="Kill process and exit"
+                                             Description="Save settings and shut AutoCenter down immediately.">
+                                <tk:SettingsCard.HeaderIcon>
+                                    <FontIcon Glyph="&#xE7E8;" />
+                                </tk:SettingsCard.HeaderIcon>
+                                <Button Click="OnKillExitClick">
+                                    <StackPanel Orientation="Horizontal" Spacing="8">
+                                        <FontIcon Glyph="&#xE711;" FontSize="14" />
+                                        <TextBlock Text="Exit" />
+                                    </StackPanel>
+                                </Button>
+                            </tk:SettingsCard>
+                        </StackPanel>
+                        </Grid>
+                    </ScrollViewer>
+
+                    <ScrollViewer x:Name="PlacementPage" Visibility="Collapsed" VerticalScrollBarVisibility="Auto" HorizontalScrollMode="Disabled" HorizontalScrollBarVisibility="Disabled" Padding="36,28,36,28">
+                        <Grid HorizontalAlignment="Stretch">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="100*" MaxWidth="1000" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="1" HorizontalAlignment="Stretch" Spacing="3">
+                            <TextBlock Text="Placement" Style="{StaticResource PageTitleStyle}" />
+
+                            <TextBlock Text="Sizing" Style="{StaticResource GroupHeaderStyle}" Margin="1,0,0,4" />
+
+                            <tk:SettingsExpander Header="Resize mode"
+                                                 Description="Choose how windows are sized when centered.">
+                                <tk:SettingsExpander.HeaderIcon>
+                                    <FontIcon Glyph="&#xE740;" />
+                                </tk:SettingsExpander.HeaderIcon>
+                                <ComboBox x:Name="ResizeModeComboBox" SelectionChanged="OnResizeModeChanged" MinWidth="200">
+                                    <ComboBoxItem Content="Preserve current size" />
+                                    <ComboBoxItem Content="Percent of monitor" />
+                                    <ComboBoxItem Content="Fixed pixels" />
+                                    <ComboBoxItem Content="Uniform margin" />
+                                    <ComboBoxItem Content="Separate margins" />
+                                </ComboBox>
+
+                                <tk:SettingsExpander.Items>
+                                    <tk:SettingsCard x:Name="WidthPercentCard" Header="Width" Visibility="Collapsed">
+                                        <StackPanel Orientation="Horizontal" Spacing="12" VerticalAlignment="Center" MinWidth="280">
+                                            <Slider x:Name="WidthPercentSlider" Width="200" ValueChanged="OnSettingChanged" />
+                                            <TextBlock x:Name="WidthPercentLabel" VerticalAlignment="Center" MinWidth="44" Style="{ThemeResource BodyStrongTextBlockStyle}" />
+                                        </StackPanel>
+                                    </tk:SettingsCard>
+                                    <tk:SettingsCard x:Name="HeightPercentCard" Header="Height" Visibility="Collapsed">
+                                        <StackPanel Orientation="Horizontal" Spacing="12" VerticalAlignment="Center" MinWidth="280">
+                                            <Slider x:Name="HeightPercentSlider" Width="200" ValueChanged="OnSettingChanged" />
+                                            <TextBlock x:Name="HeightPercentLabel" VerticalAlignment="Center" MinWidth="44" Style="{ThemeResource BodyStrongTextBlockStyle}" />
+                                        </StackPanel>
+                                    </tk:SettingsCard>
+                                    <tk:SettingsCard x:Name="WidthPixelsCard" Header="Width (pixels)" Visibility="Collapsed">
+                                        <NumberBox x:Name="WidthPixelsBox" ValueChanged="OnNumberSettingChanged" SpinButtonPlacementMode="Inline" MinWidth="160" />
+                                    </tk:SettingsCard>
+                                    <tk:SettingsCard x:Name="HeightPixelsCard" Header="Height (pixels)" Visibility="Collapsed">
+                                        <NumberBox x:Name="HeightPixelsBox" ValueChanged="OnNumberSettingChanged" SpinButtonPlacementMode="Inline" MinWidth="160" />
+                                    </tk:SettingsCard>
+                                    <tk:SettingsCard x:Name="UniformMarginCard" Header="Margin (all sides)" Visibility="Collapsed">
+                                        <NumberBox x:Name="UniformMarginBox" ValueChanged="OnNumberSettingChanged" SpinButtonPlacementMode="Inline" MinWidth="160" />
+                                    </tk:SettingsCard>
+                                    <tk:SettingsCard x:Name="MarginXCard" Header="Horizontal margin" Visibility="Collapsed">
+                                        <NumberBox x:Name="MarginXBox" ValueChanged="OnNumberSettingChanged" SpinButtonPlacementMode="Inline" MinWidth="160" />
+                                    </tk:SettingsCard>
+                                    <tk:SettingsCard x:Name="MarginYCard" Header="Vertical margin" Visibility="Collapsed">
+                                        <NumberBox x:Name="MarginYBox" ValueChanged="OnNumberSettingChanged" SpinButtonPlacementMode="Inline" MinWidth="160" />
+                                    </tk:SettingsCard>
+                                </tk:SettingsExpander.Items>
+                            </tk:SettingsExpander>
+
+                            <tk:SettingsCard x:Name="PresetsCard" Header="Quick presets"
+                                             Description="Apply common percent-of-monitor sizes.">
+                                <tk:SettingsCard.HeaderIcon>
+                                    <FontIcon Glyph="&#xE945;" />
+                                </tk:SettingsCard.HeaderIcon>
+                                <StackPanel Orientation="Horizontal" Spacing="8">
+                                    <Button Click="OnCompactPresetClick" Content="Compact 50%" />
+                                    <Button Click="OnComfortPresetClick" Content="Comfort 70%" />
+                                    <Button Click="OnFocusPresetClick" Content="Focus 90%" />
+                                </StackPanel>
+                            </tk:SettingsCard>
+                            <StackPanel x:Name="PresetFeedback" Orientation="Horizontal" Spacing="6" Visibility="Collapsed" Margin="4,8,0,0">
+                                <FontIcon Glyph="&#xE73E;" FontSize="14" Foreground="{ThemeResource SystemFillColorSuccessBrush}" />
+                                <TextBlock x:Name="PresetFeedbackText" Foreground="{ThemeResource SystemFillColorSuccessBrush}" />
+                            </StackPanel>
+
+                            <TextBlock Text="Position" Style="{StaticResource GroupHeaderStyle}" />
+
+                            <tk:SettingsCard Header="Alignment"
+                                             Description="Where the window is anchored on the monitor.">
+                                <tk:SettingsCard.HeaderIcon>
+                                    <FontIcon Glyph="&#xE8E9;" />
+                                </tk:SettingsCard.HeaderIcon>
+                                <ComboBox x:Name="AlignmentComboBox" SelectionChanged="OnAlignmentChanged" MinWidth="180">
+                                    <ComboBoxItem Content="Top left" />
+                                    <ComboBoxItem Content="Top" />
+                                    <ComboBoxItem Content="Top right" />
+                                    <ComboBoxItem Content="Left" />
+                                    <ComboBoxItem Content="Center" />
+                                    <ComboBoxItem Content="Right" />
+                                    <ComboBoxItem Content="Bottom left" />
+                                    <ComboBoxItem Content="Bottom" />
+                                    <ComboBoxItem Content="Bottom right" />
+                                </ComboBox>
+                            </tk:SettingsCard>
+
+                            <tk:SettingsCard Header="Respect taskbars and reserved work areas"
+                                             Description="Avoid placing windows under the taskbar or other reserved regions.">
+                                <tk:SettingsCard.HeaderIcon>
+                                    <FontIcon Glyph="&#xE71D;" />
+                                </tk:SettingsCard.HeaderIcon>
+                                <CheckBox x:Name="WorkingAreaCheckBox" MinWidth="0" Checked="OnSettingChanged" Unchecked="OnSettingChanged" />
+                            </tk:SettingsCard>
+
+                            <tk:SettingsCard Header="Horizontal offset"
+                                             Description="Fine-tune horizontal position in pixels.">
+                                <tk:SettingsCard.HeaderIcon>
+                                    <FontIcon Glyph="&#xE8AB;" />
+                                </tk:SettingsCard.HeaderIcon>
+                                <NumberBox x:Name="OffsetXBox" ValueChanged="OnNumberSettingChanged" SpinButtonPlacementMode="Inline" MinWidth="160" />
+                            </tk:SettingsCard>
+
+                            <tk:SettingsCard Header="Vertical offset"
+                                             Description="Fine-tune vertical position in pixels.">
+                                <tk:SettingsCard.HeaderIcon>
+                                    <FontIcon Glyph="&#xE8CB;" />
+                                </tk:SettingsCard.HeaderIcon>
+                                <NumberBox x:Name="OffsetYBox" ValueChanged="OnNumberSettingChanged" SpinButtonPlacementMode="Inline" MinWidth="160" />
+                            </tk:SettingsCard>
+                        </StackPanel>
+                        </Grid>
+                    </ScrollViewer>
+
+                    <ScrollViewer x:Name="DisplaysPage" Visibility="Collapsed" VerticalScrollBarVisibility="Auto" HorizontalScrollMode="Disabled" HorizontalScrollBarVisibility="Disabled" Padding="36,28,36,28">
+                        <Grid HorizontalAlignment="Stretch">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="100*" MaxWidth="1000" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="1" HorizontalAlignment="Stretch" Spacing="3">
+                            <TextBlock Text="Displays" Style="{StaticResource PageTitleStyle}" />
+
+                            <tk:SettingsCard Header="Target monitor"
+                                             Description="Choose which display windows get centered on.">
+                                <tk:SettingsCard.HeaderIcon>
+                                    <FontIcon Glyph="&#xE7F8;" />
+                                </tk:SettingsCard.HeaderIcon>
+                                <ComboBox x:Name="MonitorModeComboBox" SelectionChanged="OnTargetModeChanged" MinWidth="200">
+                                    <ComboBoxItem Content="Current window monitor" />
+                                    <ComboBoxItem Content="Primary monitor" />
+                                    <ComboBoxItem Content="Specific monitor" />
+                                </ComboBox>
+                            </tk:SettingsCard>
+
+                            <tk:SettingsCard x:Name="SpecificMonitorCard" Header="Specific monitor"
+                                             Description="The exact display to use when targeting a specific monitor.">
+                                <tk:SettingsCard.HeaderIcon>
+                                    <FontIcon Glyph="&#xE771;" />
+                                </tk:SettingsCard.HeaderIcon>
+                                <ComboBox x:Name="SpecificMonitorComboBox" SelectionChanged="OnSpecificMonitorChanged" DisplayMemberPath="DisplayName" MinWidth="240" />
+                            </tk:SettingsCard>
+
+                            <tk:SettingsCard Header="Refresh display list"
+                                             Description="Refresh after changing Windows display settings.">
+                                <tk:SettingsCard.HeaderIcon>
+                                    <FontIcon Glyph="&#xE7F4;" />
+                                </tk:SettingsCard.HeaderIcon>
+                                <StackPanel Orientation="Horizontal" Spacing="10" VerticalAlignment="Center">
+                                    <StackPanel x:Name="RefreshFeedback" Orientation="Horizontal" Spacing="6" VerticalAlignment="Center" Visibility="Collapsed">
+                                        <FontIcon Glyph="&#xE73E;" FontSize="14" Foreground="{ThemeResource SystemFillColorSuccessBrush}" />
+                                        <TextBlock Text="Refreshed" Foreground="{ThemeResource SystemFillColorSuccessBrush}" />
+                                    </StackPanel>
+                                    <Button x:Name="RefreshMonitorsButton" Click="OnRefreshMonitorsClick" ToolTipService.ToolTip="Refresh monitors">
+                                        <StackPanel Orientation="Horizontal" Spacing="6">
+                                            <FontIcon Glyph="&#xE72C;" FontSize="14" />
+                                            <TextBlock Text="Refresh" />
+                                        </StackPanel>
+                                    </Button>
+                                </StackPanel>
+                            </tk:SettingsCard>
+
+                            <TextBlock Text="Detected displays" Style="{StaticResource GroupHeaderStyle}" />
+                            <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                                    BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                                    BorderThickness="1"
+                                    CornerRadius="4">
+                                <ListView x:Name="MonitorListView"
+                                          SelectionMode="None"
+                                          Background="Transparent"
+                                          IsItemClickEnabled="False">
+                                    <ListView.ItemContainerStyle>
+                                        <Style TargetType="ListViewItem">
+                                            <Setter Property="Padding" Value="16,12" />
+                                            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                                        </Style>
+                                    </ListView.ItemContainerStyle>
+                                    <ListView.ItemTemplate>
+                                        <DataTemplate>
+                                            <Grid ColumnSpacing="12">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="Auto" />
+                                                    <ColumnDefinition Width="*" />
+                                                </Grid.ColumnDefinitions>
+                                                <Border Width="36" Height="36" CornerRadius="8" Background="{ThemeResource AccentFillColorTertiaryBrush}">
+                                                    <FontIcon Glyph="&#xE7F8;" FontSize="16" />
+                                                </Border>
+                                                <StackPanel Grid.Column="1" Spacing="2" VerticalAlignment="Center">
+                                                    <TextBlock Text="{Binding DisplayName}" Style="{ThemeResource BodyStrongTextBlockStyle}" />
+                                                    <TextBlock Text="{Binding DeviceName}" Style="{ThemeResource CaptionTextBlockStyle}" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                                                </StackPanel>
+                                            </Grid>
+                                        </DataTemplate>
+                                    </ListView.ItemTemplate>
+                                </ListView>
+                            </Border>
+                        </StackPanel>
+                        </Grid>
+                    </ScrollViewer>
+
+                    <ScrollViewer x:Name="HotkeyPage" Visibility="Collapsed" VerticalScrollBarVisibility="Auto" HorizontalScrollMode="Disabled" HorizontalScrollBarVisibility="Disabled" Padding="36,28,36,28">
+                        <Grid HorizontalAlignment="Stretch">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="100*" MaxWidth="1000" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="1" HorizontalAlignment="Stretch" Spacing="3">
+                            <TextBlock Text="Hotkey" Style="{StaticResource PageTitleStyle}" />
+
+                            <tk:SettingsExpander x:Name="HotkeyExpander"
+                                                 Header="Activation shortcut"
+                                                 Description="Press this combination (or sequence) to center the foreground window.">
+                                <tk:SettingsExpander.HeaderIcon>
+                                    <FontIcon Glyph="&#xE92E;" />
+                                </tk:SettingsExpander.HeaderIcon>
+
+                                <ItemsControl x:Name="HotkeyChipsHost">
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <StackPanel Orientation="Horizontal" Spacing="4" />
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <Border Background="{ThemeResource ControlFillColorDefaultBrush}"
+                                                    BorderBrush="{ThemeResource ControlElevationBorderBrush}"
+                                                    BorderThickness="1"
+                                                    CornerRadius="4"
+                                                    Padding="8,2"
+                                                    MinWidth="32"
+                                                    HorizontalAlignment="Center">
+                                                <TextBlock Text="{Binding}" HorizontalAlignment="Center" Style="{ThemeResource CaptionTextBlockStyle}" FontWeight="SemiBold" />
+                                            </Border>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+
+                                <tk:SettingsExpander.Items>
+                                    <tk:SettingsCard Header="Use press sequence"
+                                                     Description="Trigger by tapping a single key multiple times instead of using a key combination.">
+                                        <CheckBox x:Name="HotkeySequenceCheckBox" MinWidth="0" Checked="OnSettingChanged" Unchecked="OnSettingChanged" />
+                                    </tk:SettingsCard>
+
+                                    <tk:SettingsCard x:Name="ModifiersCard" Header="Modifier keys"
+                                                     Description="Modifiers held alongside the activation key.">
+                                        <StackPanel Orientation="Horizontal" Spacing="14">
+                                            <CheckBox x:Name="HotkeyAltCheckBox" Content="Alt" Checked="OnSettingChanged" Unchecked="OnSettingChanged" />
+                                            <CheckBox x:Name="HotkeyControlCheckBox" Content="Ctrl" Checked="OnSettingChanged" Unchecked="OnSettingChanged" />
+                                            <CheckBox x:Name="HotkeyShiftCheckBox" Content="Shift" Checked="OnSettingChanged" Unchecked="OnSettingChanged" />
+                                            <CheckBox x:Name="HotkeyWinCheckBox" Content="Win" Checked="OnSettingChanged" Unchecked="OnSettingChanged" />
+                                        </StackPanel>
+                                    </tk:SettingsCard>
+
+                                    <tk:SettingsCard x:Name="HotkeyKeyCard" Header="Key">
+                                        <ComboBox x:Name="HotkeyKeyComboBox" SelectionChanged="OnHotkeyKeyChanged" MinWidth="160">
+                                            <ComboBoxItem Content="C" Tag="67" />
+                                            <ComboBoxItem Content="Space" Tag="32" />
+                                            <ComboBoxItem Content="Enter" Tag="13" />
+                                            <ComboBoxItem Content="F8" Tag="119" />
+                                            <ComboBoxItem Content="F9" Tag="120" />
+                                            <ComboBoxItem Content="F10" Tag="121" />
+                                        </ComboBox>
+                                    </tk:SettingsCard>
+
+                                    <tk:SettingsCard x:Name="SequenceKeyCard" Header="Sequence key" Visibility="Collapsed">
+                                        <ComboBox x:Name="SequenceKeyComboBox" SelectionChanged="OnSettingChanged" MinWidth="160">
+                                            <ComboBoxItem Content="Shift" Tag="16" />
+                                            <ComboBoxItem Content="Ctrl" Tag="17" />
+                                            <ComboBoxItem Content="Alt" Tag="18" />
+                                        </ComboBox>
+                                    </tk:SettingsCard>
+
+                                    <tk:SettingsCard x:Name="SequenceCountCard" Header="Number of presses" Visibility="Collapsed">
+                                        <NumberBox x:Name="SequenceCountBox" ValueChanged="OnNumberSettingChanged" SpinButtonPlacementMode="Inline" MinWidth="140" />
+                                    </tk:SettingsCard>
+
+                                    <tk:SettingsCard x:Name="SequenceTimeoutCard" Header="Timeout (ms)" Visibility="Collapsed">
+                                        <NumberBox x:Name="SequenceTimeoutBox" ValueChanged="OnNumberSettingChanged" SpinButtonPlacementMode="Inline" MinWidth="140" />
+                                    </tk:SettingsCard>
+                                </tk:SettingsExpander.Items>
+                            </tk:SettingsExpander>
+
+                            <tk:SettingsCard Header="Override fixed-size window filter"
+                                             Description="Allow the hotkey to center windows that have fixed dimensions.">
+                                <tk:SettingsCard.HeaderIcon>
+                                    <FontIcon Glyph="&#xE8FF;" />
+                                </tk:SettingsCard.HeaderIcon>
+                                <CheckBox x:Name="HotkeyBypassFixedSizeCheckBox" MinWidth="0" Checked="OnSettingChanged" Unchecked="OnSettingChanged" />
+                            </tk:SettingsCard>
+
+                            <tk:SettingsCard Header="Override maximized windows"
+                                             Description="Let the hotkey restore and center windows that are currently maximized.">
+                                <tk:SettingsCard.HeaderIcon>
+                                    <FontIcon Glyph="&#xE740;" />
+                                </tk:SettingsCard.HeaderIcon>
+                                <CheckBox x:Name="HotkeyBypassMaximizedCheckBox" MinWidth="0" Checked="OnSettingChanged" Unchecked="OnSettingChanged" />
+                            </tk:SettingsCard>
+                        </StackPanel>
+                        </Grid>
+                    </ScrollViewer>
+
+                    <ScrollViewer x:Name="AdvancedPage" Visibility="Collapsed" VerticalScrollBarVisibility="Auto" HorizontalScrollMode="Disabled" HorizontalScrollBarVisibility="Disabled" Padding="36,28,36,28">
+                        <Grid HorizontalAlignment="Stretch">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="100*" MaxWidth="1000" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="1" HorizontalAlignment="Stretch" Spacing="3">
+                            <TextBlock Text="Advanced" Style="{StaticResource PageTitleStyle}" />
+
+                            <TextBlock Text="Filters" Style="{StaticResource GroupHeaderStyle}" Margin="1,0,0,4" />
+
+                            <tk:SettingsCard Header="Only move each window once"
+                                             Description="Skip a window after it's been centered the first time.">
+                                <tk:SettingsCard.HeaderIcon>
+                                    <FontIcon Glyph="&#xE823;" />
+                                </tk:SettingsCard.HeaderIcon>
+                                <CheckBox x:Name="OnlyOnceCheckBox" MinWidth="0" Checked="OnSettingChanged" Unchecked="OnSettingChanged" />
+                            </tk:SettingsCard>
+
+                            <tk:SettingsCard Header="Skip shell popups and overlays"
+                                             Description="Avoid moving Start menu, search, and other shell surfaces.">
+                                <tk:SettingsCard.HeaderIcon>
+                                    <FontIcon Glyph="&#xEA37;" />
+                                </tk:SettingsCard.HeaderIcon>
+                                <CheckBox x:Name="SmartFilterCheckBox" MinWidth="0" Checked="OnSettingChanged" Unchecked="OnSettingChanged" />
+                            </tk:SettingsCard>
+
+                            <tk:SettingsCard Header="Leave maximized windows alone"
+                                             Description="Don't restore or move windows that are currently maximized.">
+                                <tk:SettingsCard.HeaderIcon>
+                                    <FontIcon Glyph="&#xE740;" />
+                                </tk:SettingsCard.HeaderIcon>
+                                <CheckBox x:Name="SkipMaximizedCheckBox" MinWidth="0" Checked="OnSettingChanged" Unchecked="OnSettingChanged" />
+                            </tk:SettingsCard>
+
+                            <tk:SettingsCard Header="Include fixed-size windows"
+                                             Description="Move dialogs and other windows that report a non-resizable size.">
+                                <tk:SettingsCard.HeaderIcon>
+                                    <FontIcon Glyph="&#xE8FF;" />
+                                </tk:SettingsCard.HeaderIcon>
+                                <CheckBox x:Name="IncludeFixedSizeCheckBox" MinWidth="0" Checked="OnSettingChanged" Unchecked="OnSettingChanged" />
+                            </tk:SettingsCard>
+
+                            <tk:SettingsCard Header="Excluded process names"
+                                             Description="Process names listed here are never moved (no .exe needed)."
+                                             ContentAlignment="Vertical"
+                                             HorizontalContentAlignment="Stretch">
+                                <tk:SettingsCard.HeaderIcon>
+                                    <FontIcon Glyph="&#xE71F;" />
+                                </tk:SettingsCard.HeaderIcon>
+                                <StackPanel Spacing="8" HorizontalAlignment="Stretch">
+                                    <Grid ColumnSpacing="8">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="Auto" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBox x:Name="NewExcludedProcessBox"
+                                                 PlaceholderText="e.g. notepad"
+                                                 KeyDown="OnNewExcludedProcessKeyDown"
+                                                 HorizontalAlignment="Stretch" />
+                                        <Button Grid.Column="1" Click="OnAddExcludedProcessClick">
+                                            <StackPanel Orientation="Horizontal" Spacing="6">
+                                                <FontIcon Glyph="&#xE710;" FontSize="14" />
+                                                <TextBlock Text="Add" />
+                                            </StackPanel>
+                                        </Button>
+                                    </Grid>
+                                    <Border BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                                            BorderThickness="1"
+                                            CornerRadius="4">
+                                        <ListView x:Name="ExcludedProcessesList"
+                                                  SelectionMode="None"
+                                                  Background="Transparent"
+                                                  IsItemClickEnabled="False"
+                                                  MaxHeight="200">
+                                            <ListView.ItemContainerStyle>
+                                                <Style TargetType="ListViewItem">
+                                                    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                                                    <Setter Property="Padding" Value="12,4" />
+                                                    <Setter Property="MinHeight" Value="40" />
+                                                </Style>
+                                            </ListView.ItemContainerStyle>
+                                            <ListView.ItemTemplate>
+                                                <DataTemplate>
+                                                    <Grid ColumnSpacing="12">
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition Width="*" />
+                                                            <ColumnDefinition Width="Auto" />
+                                                        </Grid.ColumnDefinitions>
+                                                        <TextBlock Text="{Binding}" VerticalAlignment="Center" Style="{ThemeResource BodyTextBlockStyle}" />
+                                                        <Button Grid.Column="1"
+                                                                Click="OnRemoveExcludedProcessClick"
+                                                                Tag="{Binding}"
+                                                                Style="{ThemeResource SubtleButtonStyle}"
+                                                                ToolTipService.ToolTip="Remove">
+                                                            <FontIcon Glyph="&#xE74D;" FontSize="14" />
+                                                        </Button>
+                                                    </Grid>
+                                                </DataTemplate>
+                                            </ListView.ItemTemplate>
+                                        </ListView>
+                                    </Border>
+                                    <TextBlock x:Name="ExcludedProcessesEmptyText"
+                                               Text="No exclusions yet — add a process name above."
+                                               Style="{ThemeResource CaptionTextBlockStyle}"
+                                               Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                               Visibility="Collapsed" />
+                                </StackPanel>
+                            </tk:SettingsCard>
+
+                            <TextBlock Text="Timing" Style="{StaticResource GroupHeaderStyle}" />
+
+                            <tk:SettingsCard Header="Foreground check interval"
+                                             Description="How often AutoCenter polls for new foreground windows (ms).">
+                                <tk:SettingsCard.HeaderIcon>
+                                    <FontIcon Glyph="&#xE916;" />
+                                </tk:SettingsCard.HeaderIcon>
+                                <NumberBox x:Name="PollIntervalBox" ValueChanged="OnNumberSettingChanged" SpinButtonPlacementMode="Inline" MinWidth="160" />
+                            </tk:SettingsCard>
+
+                            <tk:SettingsCard Header="Wait after activation"
+                                             Description="Delay before centering a newly focused window (ms).">
+                                <tk:SettingsCard.HeaderIcon>
+                                    <FontIcon Glyph="&#xE823;" />
+                                </tk:SettingsCard.HeaderIcon>
+                                <NumberBox x:Name="ActivationDelayBox" ValueChanged="OnNumberSettingChanged" SpinButtonPlacementMode="Inline" MinWidth="160" />
+                            </tk:SettingsCard>
+                        </StackPanel>
+                        </Grid>
+                    </ScrollViewer>
+
+                    <ScrollViewer x:Name="AboutPage" Visibility="Collapsed" VerticalScrollBarVisibility="Auto" HorizontalScrollMode="Disabled" HorizontalScrollBarVisibility="Disabled" Padding="36,28,36,28">
+                        <Grid HorizontalAlignment="Stretch">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="100*" MaxWidth="1000" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="1" HorizontalAlignment="Stretch" Spacing="3">
+                            <TextBlock Text="About" Style="{StaticResource PageTitleStyle}" />
+
+                            <tk:SettingsExpander Description="A lightweight Windows utility that automatically centers and resizes windows on your monitors.">
+                                <tk:SettingsExpander.Header>
+                                    <StackPanel Spacing="2">
+                                        <TextBlock Text="Auto Center" Style="{ThemeResource SubtitleTextBlockStyle}" />
+                                        <TextBlock x:Name="AboutVersionText" Style="{StaticResource MutedTextStyle}" />
+                                    </StackPanel>
+                                </tk:SettingsExpander.Header>
+                                <tk:SettingsExpander.HeaderIcon>
+                                    <ImageIcon Source="ms-appx:///Assets/AutoCenter.ico" Width="32" Height="32" />
+                                </tk:SettingsExpander.HeaderIcon>
+                                <tk:SettingsExpander.Items>
+                                    <tk:SettingsCard Header="Source code"
+                                                     Description="View source, file issues, and download releases on GitHub.">
+                                        <tk:SettingsCard.HeaderIcon>
+                                            <FontIcon Glyph="&#xE8A5;" />
+                                        </tk:SettingsCard.HeaderIcon>
+                                        <HyperlinkButton NavigateUri="https://github.com/jihedkdiss/AutoCenter">
+                                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                                <FontIcon Glyph="&#xE71B;" FontSize="14" />
+                                                <TextBlock Text="github.com/jihedkdiss/AutoCenter" />
+                                            </StackPanel>
+                                        </HyperlinkButton>
+                                    </tk:SettingsCard>
+                                    <tk:SettingsCard x:Name="StoreCard" Header="Microsoft Store"
+                                                     Description="Get one-click install with automatic updates. A small one-time purchase supports development.">
+                                        <tk:SettingsCard.HeaderIcon>
+                                            <FontIcon Glyph="&#xE7B8;" />
+                                        </tk:SettingsCard.HeaderIcon>
+                                        <HyperlinkButton NavigateUri="https://apps.microsoft.com/detail/9NJBD74TXX5B?referrer=appbadge&amp;cid=in_app_about&amp;mode=direct">
+                                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                                <FontIcon Glyph="&#xE7B8;" FontSize="14" />
+                                                <TextBlock Text="View on Microsoft Store" />
+                                            </StackPanel>
+                                        </HyperlinkButton>
+                                    </tk:SettingsCard>
+                                    <tk:SettingsCard Header="Sponsor"
+                                                     Description="Support ongoing development if you'd like to help out.">
+                                        <tk:SettingsCard.HeaderIcon>
+                                            <FontIcon Glyph="&#xEB52;" />
+                                        </tk:SettingsCard.HeaderIcon>
+                                        <HyperlinkButton NavigateUri="https://github.com/sponsors/jihedkdiss">
+                                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                                <FontIcon Glyph="&#xEB52;" FontSize="14" />
+                                                <TextBlock Text="GitHub Sponsors" />
+                                            </StackPanel>
+                                        </HyperlinkButton>
+                                    </tk:SettingsCard>
+                                    <tk:SettingsCard Header="Privacy policy"
+                                                     Description="Auto Center makes no network calls and collects no telemetry.">
+                                        <tk:SettingsCard.HeaderIcon>
+                                            <FontIcon Glyph="&#xE72E;" />
+                                        </tk:SettingsCard.HeaderIcon>
+                                        <HyperlinkButton NavigateUri="https://jihedkdiss.github.io/AutoCenter/privacy">
+                                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                                <FontIcon Glyph="&#xE71B;" FontSize="14" />
+                                                <TextBlock Text="Read privacy policy" />
+                                            </StackPanel>
+                                        </HyperlinkButton>
+                                    </tk:SettingsCard>
+                                </tk:SettingsExpander.Items>
+                            </tk:SettingsExpander>
+                        </StackPanel>
+                        </Grid>
+                    </ScrollViewer>
+
+                    <ScrollViewer x:Name="SettingsPage" Visibility="Collapsed" VerticalScrollBarVisibility="Auto" HorizontalScrollMode="Disabled" HorizontalScrollBarVisibility="Disabled" Padding="36,28,36,28">
+                        <Grid HorizontalAlignment="Stretch">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="100*" MaxWidth="1000" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="1" HorizontalAlignment="Stretch" Spacing="3">
+                            <TextBlock Text="Settings" Style="{StaticResource PageTitleStyle}" />
+
+                            <tk:SettingsCard Header="Launch at startup"
+                                             Description="Start AutoCenter automatically when you sign in to Windows.">
+                                <tk:SettingsCard.HeaderIcon>
+                                    <FontIcon Glyph="&#xE7E8;" />
+                                </tk:SettingsCard.HeaderIcon>
+                                <ToggleSwitch x:Name="StartupToggle" Toggled="OnStartupToggled" />
+                            </tk:SettingsCard>
+
+                            <tk:SettingsCard Header="Hide tray icon"
+                                             Description="Run silently. Open settings again from the Start menu.">
+                                <tk:SettingsCard.HeaderIcon>
+                                    <FontIcon Glyph="&#xED1A;" />
+                                </tk:SettingsCard.HeaderIcon>
+                                <ToggleSwitch x:Name="HideTrayIconToggle" Toggled="OnHideTrayIconToggled" />
+                            </tk:SettingsCard>
+
+                            <tk:SettingsCard Header="App theme"
+                                             Description="Choose the app's color theme.">
+                                <tk:SettingsCard.HeaderIcon>
+                                    <FontIcon Glyph="&#xE790;" />
+                                </tk:SettingsCard.HeaderIcon>
+                                <ComboBox x:Name="ThemeComboBox" SelectionChanged="OnThemeChanged" MinWidth="160">
+                                    <ComboBoxItem Content="Use system theme" />
+                                    <ComboBoxItem Content="Light" />
+                                    <ComboBoxItem Content="Dark" />
+                                </ComboBox>
+                            </tk:SettingsCard>
+
+                            <TextBlock Text="Permissions" Style="{StaticResource GroupHeaderStyle}" />
+
+                            <tk:SettingsCard x:Name="ElevationCard"
+                                             Header="Run as administrator"
+                                             Description="Required to center windows owned by elevated apps (Task Manager, Registry Editor, etc.). Restarts AutoCenter with admin rights.">
+                                <tk:SettingsCard.HeaderIcon>
+                                    <FontIcon Glyph="&#xE72E;" />
+                                </tk:SettingsCard.HeaderIcon>
+                                <Button x:Name="ElevateButton" Click="OnElevateClick">
+                                    <StackPanel Orientation="Horizontal" Spacing="8">
+                                        <FontIcon Glyph="&#xE7EF;" FontSize="14" />
+                                        <TextBlock x:Name="ElevateButtonLabel" Text="Restart as admin" />
+                                    </StackPanel>
+                                </Button>
+                            </tk:SettingsCard>
+
+                            <TextBlock Text="Reset" Style="{StaticResource GroupHeaderStyle}" />
+
+                            <tk:SettingsCard Header="Reset all settings"
+                                             Description="Restore all settings to their defaults.">
+                                <tk:SettingsCard.HeaderIcon>
+                                    <FontIcon Glyph="&#xE777;" />
+                                </tk:SettingsCard.HeaderIcon>
+                                <StackPanel Orientation="Horizontal" Spacing="12" VerticalAlignment="Center">
+                                    <StackPanel x:Name="ResetFeedback" Orientation="Horizontal" Spacing="6" VerticalAlignment="Center" Visibility="Collapsed">
+                                        <FontIcon Glyph="&#xE73E;" FontSize="14" Foreground="{ThemeResource SystemFillColorSuccessBrush}" />
+                                        <TextBlock Text="Settings reset" Foreground="{ThemeResource SystemFillColorSuccessBrush}" />
+                                    </StackPanel>
+                                    <Button Click="OnResetAllClick">
+                                        <StackPanel Orientation="Horizontal" Spacing="8">
+                                            <FontIcon Glyph="&#xE777;" FontSize="14" />
+                                            <TextBlock Text="Reset" />
+                                        </StackPanel>
+                                    </Button>
+                                </StackPanel>
+                            </tk:SettingsCard>
+                        </StackPanel>
+                        </Grid>
+                    </ScrollViewer>
+                </Grid>
+            </Border>
+        </NavigationView>
+    </Grid>
+</Window>

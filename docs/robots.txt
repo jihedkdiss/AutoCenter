@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://jihedkdiss.github.io/AutoCenter/sitemap.xml

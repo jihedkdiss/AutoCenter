@@ -1,0 +1,61 @@
+# Default: auto-detect text files and normalize line endings on commit.
+* text=auto eol=lf
+
+# Source code — project standard is LF (matches .editorconfig).
+*.cs            text eol=lf diff=csharp
+*.xaml          text eol=lf
+*.xml           text eol=lf
+*.json          text eol=lf
+*.yml           text eol=lf
+*.yaml          text eol=lf
+*.md            text eol=lf
+*.html          text eol=lf
+*.css           text eol=lf
+*.js            text eol=lf
+*.editorconfig  text eol=lf
+
+# Project / solution files keep CRLF (Visual Studio's expectation).
+*.sln           text eol=crlf
+*.slnx          text eol=crlf
+*.csproj        text eol=crlf
+*.vcxproj       text eol=crlf
+*.props         text eol=crlf
+*.targets       text eol=crlf
+*.wapproj       text eol=crlf
+
+# Windows shell scripts keep CRLF.
+*.bat           text eol=crlf
+*.cmd           text eol=crlf
+*.ps1           text eol=crlf
+*.psm1          text eol=crlf
+
+# Binary assets.
+*.png           binary
+*.jpg           binary
+*.jpeg          binary
+*.gif           binary
+*.ico           binary
+*.bmp           binary
+*.webp          binary
+*.ttf           binary
+*.otf           binary
+*.woff          binary
+*.woff2         binary
+*.pdf           binary
+
+# MSIX / signing artifacts.
+*.pfx           binary
+*.cer           binary
+*.crt           binary
+*.snk           binary
+*.msix          binary
+*.msixbundle    binary
+*.msixupload    binary
+*.appx          binary
+*.appxbundle    binary
+*.appxsym       binary
+
+# GitHub Linguist hints.
+docs/style.css      linguist-documentation
+docs/sitemap.xml    linguist-generated
+docs/robots.txt     linguist-generated

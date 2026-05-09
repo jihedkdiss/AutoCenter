@@ -1,0 +1,452 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Auto Center — Effortlessly center windows on Windows</title>
+  <meta name="description" content="Auto Center is a lightweight Windows 11 utility that automatically centers and resizes windows on your monitors with a global hotkey. Built with WinUI 3 and .NET 8. Free on GitHub, also on the Microsoft Store." />
+  <meta name="keywords" content="window centering, Windows utility, WinUI 3, window manager, multi-monitor, productivity, Windows 11, hotkey, window resize" />
+  <meta name="author" content="Jihed Kdiss" />
+  <meta name="theme-color" content="#005FB8" />
+  <meta name="color-scheme" content="light dark" />
+  <meta name="application-name" content="Auto Center" />
+  <meta name="robots" content="index,follow,max-image-preview:large" />
+  <meta name="generator" content="Hand-crafted" />
+  <link rel="canonical" href="https://jihedkdiss.github.io/AutoCenter/" />
+  <link rel="icon" type="image/png" sizes="48x48" href="https://raw.githubusercontent.com/jihedkdiss/AutoCenter/main/AutoCenter/Assets/Square44x44Logo.targetsize-48.png" />
+  <link rel="icon" type="image/png" sizes="256x256" href="https://raw.githubusercontent.com/jihedkdiss/AutoCenter/main/AutoCenter/Assets/Square44x44Logo.targetsize-256.png" />
+  <link rel="apple-touch-icon" href="https://raw.githubusercontent.com/jihedkdiss/AutoCenter/main/AutoCenter/Assets/Square150x150Logo.scale-200.png" />
+  <link rel="preconnect" href="https://raw.githubusercontent.com" crossorigin />
+  <link rel="stylesheet" href="style.css" />
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="Auto Center — Effortlessly center windows on Windows" />
+  <meta property="og:description" content="A lightweight Windows utility that automatically centers and resizes windows across your monitors. Built with WinUI 3." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://jihedkdiss.github.io/AutoCenter/" />
+  <meta property="og:site_name" content="Auto Center" />
+  <meta property="og:locale" content="en_US" />
+  <meta property="og:image" content="https://raw.githubusercontent.com/jihedkdiss/AutoCenter/main/docs/images/home-page.png" />
+  <meta property="og:image:alt" content="Auto Center home dashboard on Windows 11" />
+  <meta property="og:image:width" content="1858" />
+  <meta property="og:image:height" content="1042" />
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Auto Center — Effortlessly center windows on Windows" />
+  <meta name="twitter:description" content="A lightweight Windows utility that automatically centers and resizes windows across your monitors. Built with WinUI 3." />
+  <meta name="twitter:image" content="https://raw.githubusercontent.com/jihedkdiss/AutoCenter/main/docs/images/home-page.png" />
+  <meta name="twitter:image:alt" content="Auto Center home dashboard on Windows 11" />
+
+  <!-- Structured data: SoftwareApplication -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "Auto Center",
+    "operatingSystem": "Windows 10, Windows 11",
+    "applicationCategory": "UtilitiesApplication",
+    "description": "Auto Center is a lightweight Windows utility that automatically centers and resizes windows on your monitors with a global hotkey. Built with WinUI 3.",
+    "url": "https://jihedkdiss.github.io/AutoCenter/",
+    "image": "https://raw.githubusercontent.com/jihedkdiss/AutoCenter/main/AutoCenter/Assets/Square310x310Logo.scale-400.png",
+    "softwareVersion": "1.x",
+    "downloadUrl": "https://github.com/jihedkdiss/AutoCenter/releases/latest",
+    "license": "https://github.com/jihedkdiss/AutoCenter/blob/main/LICENSE",
+    "author": {
+      "@type": "Person",
+      "name": "Jihed Kdiss",
+      "url": "https://github.com/jihedkdiss"
+    },
+    "offers": [
+      {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD",
+        "url": "https://github.com/jihedkdiss/AutoCenter/releases/latest",
+        "category": "free",
+        "availability": "https://schema.org/InStock"
+      },
+      {
+        "@type": "Offer",
+        "price": "0.99",
+        "priceCurrency": "USD",
+        "url": "https://apps.microsoft.com/detail/9NJBD74TXX5B",
+        "category": "Microsoft Store",
+        "availability": "https://schema.org/InStock"
+      }
+    ]
+  }
+  </script>
+
+  <!-- Structured data: FAQPage -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Does it work on Windows 10?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. Auto Center supports Windows 10 (build 17763+) and Windows 11. It uses WinUI 3 and the Windows App SDK runtime, which is bundled with the installer."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is the GitHub version the same as the Microsoft Store version?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Same code, same features, same signing certificate. The Microsoft Store build adds one-click install and automatic background updates; the GitHub release is a signed .msixbundle you sideload and update manually."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Does it conflict with FancyZones or other window managers?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No. Auto Center only acts on the focused window when triggered (or when a new window appears, if auto-center is enabled). It doesn't intercept drags or hijack zones, so it coexists with FancyZones, PowerToys, and Snap Layouts."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can it center fixed-size dialog windows?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. The global hotkey recenters whatever window has focus — including fixed-size dialogs and small utility windows that ignore Snap."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What permissions does it need?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Just standard user-level permissions. No admin rights, no network access, no telemetry. Optional 'launch at sign-in' registers a startup task; you can revoke it any time from Task Manager → Startup apps."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Why is there a paid version on the Microsoft Store?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "The Microsoft Store version is a small one-time $0.99 purchase that supports ongoing development and pays for one-click installs and automatic updates. The full app is — and always will be — free and open source on GitHub."
+        }
+      }
+    ]
+  }
+  </script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <nav class="nav" aria-label="Primary">
+    <div class="container">
+      <a class="nav-brand" href="./" aria-label="Auto Center — home">
+        <img src="https://raw.githubusercontent.com/jihedkdiss/AutoCenter/main/AutoCenter/Assets/Square44x44Logo.targetsize-48.png" alt="" width="20" height="20" decoding="async" />
+        <span>Auto Center</span>
+      </a>
+      <div class="nav-links">
+        <a href="#features">Features</a>
+        <a href="#screenshots">Screenshots</a>
+        <a href="#install">Install</a>
+        <a href="#faq">FAQ</a>
+        <a href="privacy.html">Privacy</a>
+        <a href="https://github.com/jihedkdiss/AutoCenter" target="_blank" rel="noopener noreferrer">GitHub</a>
+      </div>
+    </div>
+  </nav>
+
+ <main id="main">
+  <header class="hero">
+    <div class="container">
+      <div class="hint-pill" aria-label="Version 1 now on the Microsoft Store">
+        <span class="dot" aria-hidden="true">v1</span>
+        <span>Now on the Microsoft Store</span>
+      </div>
+      <h1>Effortlessly center<br />windows on <span class="accent">Windows</span>.</h1>
+      <p class="lede">A lightweight utility that automatically centers and resizes windows across your monitors. Built with WinUI 3 and a single global hotkey away.</p>
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="https://apps.microsoft.com/detail/9NJBD74TXX5B?referrer=appbadge&amp;cid=pages_hero&amp;mode=direct">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M0 0h7.5v7.5H0V0Zm8.5 0H16v7.5H8.5V0ZM0 8.5h7.5V16H0V8.5Zm8.5 0H16V16H8.5V8.5Z"/></svg>
+          Get on Microsoft Store
+        </a>
+        <a class="btn btn-secondary" href="https://github.com/jihedkdiss/AutoCenter/releases/latest">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0a8 8 0 0 0-2.53 15.59c.4.07.55-.18.55-.39v-1.36c-2.22.48-2.69-1.07-2.69-1.07-.36-.92-.89-1.16-.89-1.16-.73-.5.05-.49.05-.49.81.06 1.23.83 1.23.83.72 1.23 1.88.87 2.34.66.07-.52.28-.87.5-1.07-1.77-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.83-2.15-.08-.2-.36-1.02.08-2.13 0 0 .67-.21 2.2.82a7.6 7.6 0 0 1 4 0c1.53-1.04 2.2-.82 2.2-.82.44 1.11.16 1.93.08 2.13.52.56.83 1.27.83 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.74.54 1.49v2.21c0 .21.15.46.55.39A8 8 0 0 0 8 0Z"/></svg>
+          Download on GitHub
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <section id="features" aria-labelledby="features-title">
+    <div class="container">
+      <h2 id="features-title">What it does</h2>
+      <p class="section-lede">Stays out of your way until you summon it.</p>
+      <div class="features">
+
+        <div class="feature fade-in">
+          <div class="feature-glyph">
+            <!-- Fluent: Maximize -->
+            <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+              <rect x="3.25" y="3.25" width="13.5" height="13.5" rx="2.25"/>
+              <rect x="7.25" y="7.25" width="5.5" height="5.5" rx="1"/>
+            </svg>
+          </div>
+          <h3>Auto-center new windows</h3>
+          <p>Newly focused windows snap to the center of your monitor automatically — no setup required.</p>
+        </div>
+
+        <div class="feature fade-in">
+          <div class="feature-glyph">
+            <!-- Fluent: Keyboard -->
+            <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+              <rect x="2.25" y="5.25" width="15.5" height="9.5" rx="1.75"/>
+              <path d="M5 8.5h.01M7.5 8.5h.01M10 8.5h.01M12.5 8.5h.01M15 8.5h.01M5 11.5h.01M15 11.5h.01M7.5 12h5"/>
+            </svg>
+          </div>
+          <h3>Global hotkey</h3>
+          <p>One keystroke (or a Shift double-tap) recenters whatever window has focus, even fixed-size ones.</p>
+        </div>
+
+        <div class="feature fade-in">
+          <div class="feature-glyph">
+            <!-- Fluent: Resize -->
+            <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true">
+              <path d="M3.5 10h13M6 7.25 3.25 10 6 12.75M14 7.25 16.75 10 14 12.75"/>
+            </svg>
+          </div>
+          <h3>Flexible sizing</h3>
+          <p>Preserve original size, scale by percent, set fixed pixels, or apply a uniform margin from screen edges.</p>
+        </div>
+
+        <div class="feature fade-in">
+          <div class="feature-glyph">
+            <!-- Fluent: 9-grid alignment -->
+            <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+              <rect x="3" y="3" width="14" height="14" rx="1.5"/>
+              <path d="M3 7.66h14M3 12.33h14M7.66 3v14M12.33 3v14"/>
+              <rect x="9" y="9" width="2" height="2" fill="currentColor" stroke="none"/>
+            </svg>
+          </div>
+          <h3>9 alignment positions</h3>
+          <p>Center, top-left, bottom-right, and everything between. Pick the spot that fits your workflow.</p>
+        </div>
+
+        <div class="feature fade-in">
+          <div class="feature-glyph">
+            <!-- Fluent: Multi-monitor -->
+            <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+              <rect x="2.25" y="4.25" width="9" height="6.5" rx="1.25"/>
+              <rect x="9.75" y="8.25" width="8" height="5.5" rx="1.25"/>
+              <path d="M5.75 13.5h-.5M14 16h-.5"/>
+            </svg>
+          </div>
+          <h3>Multi-monitor</h3>
+          <p>Target the active monitor, primary monitor, or pin a specific display. Respects taskbars and work areas.</p>
+        </div>
+
+        <div class="feature fade-in">
+          <div class="feature-glyph">
+            <!-- Fluent: System tray -->
+            <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true">
+              <path d="M3 14.5h14M5.5 11.5l2 2 5-5"/>
+              <circle cx="13" cy="14.5" r="0.6" fill="currentColor" stroke="none"/>
+              <circle cx="15.25" cy="14.5" r="0.6" fill="currentColor" stroke="none"/>
+            </svg>
+          </div>
+          <h3>Lives in the tray</h3>
+          <p>Native Fluent design with light/dark theme support. Minimizes to tray; launches at sign-in if you'd like.</p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <section id="screenshots" aria-labelledby="screenshots-title">
+    <div class="container">
+      <h2 id="screenshots-title">See it in action</h2>
+      <p class="section-lede">Native Fluent Design, top to bottom.</p>
+
+      <div class="shots">
+        <figure class="shot shot--lead" data-label="Home">
+          <img src="images/home-page.png"
+               alt="Auto Center home dashboard showing the version, dashboard cards for General, Placement, Displays, Hotkey, Advanced, and App settings, plus the Center all windows button"
+               width="1858" height="1042" loading="lazy" decoding="async"
+               onerror="this.closest('.shot').classList.add('shot--missing')" />
+          <figcaption>Home dashboard — every section one click away, with a Center-all action front and centre.</figcaption>
+        </figure>
+
+        <figure class="shot" data-label="Placement">
+          <img src="images/fluent-design-showcase.png"
+               alt="Placement page showing resize mode, width and height percent sliders, quick presets, alignment, and offset controls"
+               width="1858" height="1042" loading="lazy" decoding="async"
+               onerror="this.closest('.shot').classList.add('shot--missing')" />
+          <figcaption>Placement — resize mode, alignment, and per-axis offsets, all native WinUI 3.</figcaption>
+        </figure>
+
+        <figure class="shot" data-label="Advanced">
+          <img src="images/advanced-settings-showcase.png"
+               alt="Advanced page showing window filter toggles and an excluded process names list with add and per-row remove buttons"
+               width="1280" height="720" loading="lazy" decoding="async"
+               onerror="this.closest('.shot').classList.add('shot--missing')" />
+          <figcaption>Advanced — fine-grained filters and per-process exclusions with one-click add &amp; remove.</figcaption>
+        </figure>
+
+        <figure class="shot" data-label="On Windows 11">
+          <img src="images/placement-settings-showcase.png"
+               alt="Auto Center running on a Windows 11 desktop, showing the Placement page in context"
+               width="1280" height="720" loading="lazy" decoding="async"
+               onerror="this.closest('.shot').classList.add('shot--missing')" />
+          <figcaption>At home on Windows 11 — Mica blur, system accent, light and dark mode out of the box.</figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <section id="install" aria-labelledby="install-title">
+    <div class="container">
+      <h2 id="install-title">Two ways to install</h2>
+      <p class="section-lede">Same app, same features. Pick the channel that fits.</p>
+      <div class="install-grid">
+        <div class="install-card fade-in">
+          <span class="badge-pill recommended">Recommended</span>
+          <h3>Microsoft Store</h3>
+          <p>One-click install with automatic background updates. A small one-time purchase that supports ongoing development.</p>
+          <a class="btn btn-primary" href="https://apps.microsoft.com/detail/9NJBD74TXX5B?referrer=appbadge&amp;cid=pages_install&amp;mode=direct">Get on Microsoft Store</a>
+        </div>
+        <div class="install-card fade-in">
+          <span class="badge-pill foss">Free &amp; open source</span>
+          <h3>GitHub release</h3>
+          <p>Fully featured, completely free, sideloaded as a signed <code>.msixbundle</code>. Updates are manual.</p>
+          <a class="btn btn-secondary" href="https://github.com/jihedkdiss/AutoCenter/releases/latest">Download latest release</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="faq" aria-labelledby="faq-title">
+    <div class="container">
+      <h2 id="faq-title">Frequently asked questions</h2>
+      <p class="section-lede">The short answers to the most common questions.</p>
+
+      <div class="faq">
+        <details class="faq-item fade-in">
+          <summary>
+            <span>Does it work on Windows 10?</span>
+            <svg class="chev" viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.5 6.5 8 10l3.5-3.5"/></svg>
+          </summary>
+          <div class="faq-body">
+            <p>Yes. Auto Center supports Windows 10 (build 17763+) and Windows 11. It uses WinUI 3 and the Windows App SDK runtime, which is bundled with the installer.</p>
+          </div>
+        </details>
+
+        <details class="faq-item fade-in">
+          <summary>
+            <span>Is the GitHub version the same as the Microsoft Store version?</span>
+            <svg class="chev" viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.5 6.5 8 10l3.5-3.5"/></svg>
+          </summary>
+          <div class="faq-body">
+            <p>Same code, same features, same signing certificate. The Microsoft Store build adds one-click install and automatic background updates; the GitHub release is a signed <code>.msixbundle</code> you sideload and update manually.</p>
+          </div>
+        </details>
+
+        <details class="faq-item fade-in">
+          <summary>
+            <span>Does it conflict with FancyZones or other window managers?</span>
+            <svg class="chev" viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.5 6.5 8 10l3.5-3.5"/></svg>
+          </summary>
+          <div class="faq-body">
+            <p>No — Auto Center only acts on the focused window when triggered (or when a new window appears, if auto-center is enabled). It doesn't intercept drags or hijack zones, so it coexists with FancyZones, PowerToys, and Snap Layouts.</p>
+          </div>
+        </details>
+
+        <details class="faq-item fade-in">
+          <summary>
+            <span>Can it center fixed-size dialog windows?</span>
+            <svg class="chev" viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.5 6.5 8 10l3.5-3.5"/></svg>
+          </summary>
+          <div class="faq-body">
+            <p>Yes. The global hotkey recenters whatever window has focus — including fixed-size dialogs and small utility windows that ignore Snap.</p>
+          </div>
+        </details>
+
+        <details class="faq-item fade-in">
+          <summary>
+            <span>What permissions does it need?</span>
+            <svg class="chev" viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.5 6.5 8 10l3.5-3.5"/></svg>
+          </summary>
+          <div class="faq-body">
+            <p>Just standard user-level permissions. No admin rights, no network access, no telemetry. Optional "launch at sign-in" registers a startup task; you can revoke it any time from Task Manager → Startup apps.</p>
+          </div>
+        </details>
+
+        <details class="faq-item fade-in">
+          <summary>
+            <span>Why is there a paid version on the Microsoft Store?</span>
+            <svg class="chev" viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.5 6.5 8 10l3.5-3.5"/></svg>
+          </summary>
+          <div class="faq-body">
+            <p>The Microsoft Store version is a small one-time $0.99 purchase that supports ongoing development and pays for one-click installs and automatic updates. The full app is — and always will be — free and open source on GitHub.</p>
+          </div>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <section aria-label="Privacy at a glance">
+    <div class="container">
+      <div class="privacy-callout fade-in" role="note">
+        <div class="glyph">
+          <!-- Fluent: Shield -->
+          <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" aria-hidden="true">
+            <path d="M10 2.75 4 5v4.5c0 3.45 2.4 6.6 6 7.75 3.6-1.15 6-4.3 6-7.75V5l-6-2.25Z"/>
+            <path d="m7.5 10 1.75 1.75L13 8" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div>
+          <h3>Privacy by default</h3>
+          <p>Auto Center makes no network calls and collects no telemetry. Your settings and crash logs stay on your machine. <a href="privacy.html">Read the privacy policy<span aria-hidden="true"> →</span></a></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  </main>
+
+  <footer role="contentinfo">
+    <div class="container">
+      <div>© <span id="year"></span> Jihed Kdiss · <a href="https://github.com/jihedkdiss/AutoCenter/blob/main/LICENSE" rel="license">MIT</a></div>
+      <nav class="footer-links" aria-label="Footer">
+        <a href="https://github.com/jihedkdiss/AutoCenter" rel="noopener">GitHub</a>
+        <a href="https://github.com/sponsors/jihedkdiss" rel="noopener">Sponsor</a>
+        <a href="privacy.html">Privacy</a>
+        <a href="https://github.com/jihedkdiss/AutoCenter/issues" rel="noopener">Support</a>
+      </nav>
+    </div>
+  </footer>
+
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // ---- Scroll-reveal: stagger fade-in cards as they enter the viewport ----
+    (function () {
+      const items = document.querySelectorAll('.fade-in');
+      if (!('IntersectionObserver' in window)) {
+        items.forEach(el => el.classList.add('visible'));
+        return;
+      }
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach((entry, i) => {
+          if (entry.isIntersecting) {
+            const idx = Array.prototype.indexOf.call(entry.target.parentNode.children, entry.target);
+            entry.target.style.transitionDelay = (Math.min(idx, 5) * 60) + 'ms';
+            entry.target.classList.add('visible');
+            io.unobserve(entry.target);
+          }
+        });
+      }, { rootMargin: '0px 0px -8% 0px', threshold: 0.05 });
+      items.forEach(el => io.observe(el));
+    })();
+  </script>
+</body>
+</html>

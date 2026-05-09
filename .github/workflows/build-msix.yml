@@ -1,0 +1,105 @@
+name: Build and Package MSIX
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - 'AutoCenter/Package.appxmanifest'
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    strategy:
+      matrix:
+        configuration: ["GitHub Release", "Release"]
+
+    env:
+      PROJECT_PATH: AutoCenter\AutoCenter.csproj
+      CONFIGURATION: ${{ matrix.configuration }}
+      PLATFORM: x64
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Setup MSBuild
+        uses: microsoft/setup-msbuild@v2
+
+      - name: Extract app version
+        shell: pwsh
+        run: |
+          [xml]$manifest = Get-Content 'AutoCenter\Package.appxmanifest'
+          $fullVersion = $manifest.Package.Identity.Version
+          $version = ($fullVersion -split '\.')[0..2] -join '.'
+          "APP_VERSION=$version" | Out-File -FilePath $env:GITHUB_ENV -Append
+
+      - name: Import signing certificate (GitHub Release only)
+        if: matrix.configuration == 'GitHub Release'
+        shell: pwsh
+        run: |
+          $pfx = "AutoCenter\AutoCenter_TemporaryKey.pfx"
+          if (-not (Test-Path $pfx)) { throw "Missing $pfx" }
+          $pwd = New-Object System.Security.SecureString
+          Import-PfxCertificate -FilePath $pfx -CertStoreLocation Cert:\CurrentUser\My -Password $pwd | Out-Null
+
+      - name: Restore
+        run: msbuild $env:PROJECT_PATH -t:Restore "-p:Configuration=$env:CONFIGURATION" "-p:Platform=$env:PLATFORM"
+
+      - name: Build & Package (MSIX)
+        shell: pwsh
+        run: |
+          msbuild $env:PROJECT_PATH `
+            "-p:Configuration=$env:CONFIGURATION" `
+            "-p:Platform=$env:PLATFORM" `
+            -p:AppxBundle=Always `
+            "-p:AppxBundlePlatforms=x64|arm64" `
+            -p:GenerateAppxPackageOnBuild=true `
+            "-p:AppxPackageDir=$env:GITHUB_WORKSPACE\AppxPackages\\"
+
+      - name: Prepare GitHub Release artifact
+        if: matrix.configuration == 'GitHub Release'
+        shell: pwsh
+        run: |
+          $outDir = "$env:GITHUB_WORKSPACE\InstallerOutput"
+          New-Item -ItemType Directory -Path $outDir | Out-Null
+          $testFolder = Get-ChildItem "$env:GITHUB_WORKSPACE\AppxPackages" -Directory |
+            Where-Object { $_.Name -like '*_Test' } | Select-Object -First 1
+          if (-not $testFolder) { throw "No *_Test folder produced under AppxPackages" }
+          Move-Item $testFolder.FullName "$outDir\SystemFiles"
+          Copy-Item ".github\build-files\AutoCenter_Installer.bat" "$outDir\"
+          Copy-Item ".github\build-files\Install-AutoCenter.ps1" "$outDir\"
+          Copy-Item ".github\build-files\README.txt" "$outDir\"
+
+      - name: Locate Store .msixupload
+        if: matrix.configuration == 'Release'
+        id: locate
+        shell: pwsh
+        run: |
+          $upload = Get-ChildItem -Path AppxPackages -Recurse -Filter *.msixupload | Select-Object -First 1
+          if (-not $upload) { throw "No .msixupload produced" }
+          "path=$($upload.FullName)" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
+
+      - name: Upload GitHub Release artifact
+        if: matrix.configuration == 'GitHub Release'
+        uses: actions/upload-artifact@v4
+        with:
+          name: AutoCenter_${{ env.APP_VERSION }}_${{ env.PLATFORM }}_Installer
+          path: InstallerOutput\
+
+      - name: Upload Store artifact
+        if: matrix.configuration == 'Release'
+        uses: actions/upload-artifact@v4
+        with:
+          name: AutoCenter_${{ env.APP_VERSION }}_${{ env.PLATFORM }}_Release
+          path: ${{ steps.locate.outputs.path }}

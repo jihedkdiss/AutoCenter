@@ -1,0 +1,1056 @@
+/* =============================================================
+   Auto Center — WinUI 3 / Fluent Design web theme
+   Mica + Acrylic + Layered cards + Reveal highlight
+   ============================================================= */
+
+:root {
+  /* --- Windows 11 accent ramp ---------------------------------- */
+  --accent-base:        #005FB8;      /* SystemAccentColor (light)  */
+  --accent-secondary:   #003E92;
+  --accent-tertiary:    #002C6B;
+  --accent-on-mica:     #003E92;      /* a11y on Mica light         */
+  --accent-text-on-bg:  #003E92;
+
+  /* --- Mica / surface tokens (light) --------------------------- */
+  --mica-base:          #f3f3f3;
+  --mica-tint-1:        rgba(0, 95, 184, 0.045);
+  --mica-tint-2:        rgba(76, 194, 255, 0.06);
+  --mica-tint-3:        rgba(255, 121, 198, 0.035);
+
+  --layer-1:            rgba(255, 255, 255, 0.70);
+  --layer-2:            rgba(255, 255, 255, 0.55);
+  --layer-alt:          rgba(249, 249, 249, 0.85);
+
+  --card-fill:          rgba(255, 255, 255, 0.70);
+  --card-fill-secondary:rgba(246, 246, 246, 0.50);
+  --card-fill-tertiary: rgba(255, 255, 255, 0.40);
+
+  --control-fill:       rgba(255, 255, 255, 0.70);
+  --control-fill-hover: rgba(249, 249, 249, 0.50);
+  --control-fill-press: rgba(249, 249, 249, 0.30);
+
+  /* WinUI signature: hairline top stroke + slightly darker bottom */
+  --stroke-default:     rgba(0, 0, 0, 0.0578);
+  --stroke-default-bot: rgba(0, 0, 0, 0.1622);
+  --stroke-card:        rgba(0, 0, 0, 0.0578);
+  --stroke-divider:     rgba(0, 0, 0, 0.0803);
+  --stroke-focus:       rgba(0, 0, 0, 0.8956);
+  --stroke-focus-inner: var(--accent-base);
+
+  --text-primary:       rgba(0, 0, 0, 0.8956);
+  --text-secondary:     rgba(0, 0, 0, 0.6063);
+  --text-tertiary:      rgba(0, 0, 0, 0.4458);
+  --text-on-accent:     #ffffff;
+  --text-disabled:      rgba(0, 0, 0, 0.3614);
+
+  /* WinUI elevation system */
+  --shadow-card:        0 2px 4px rgba(0, 0, 0, 0.04),
+                        0 1px 2px rgba(0, 0, 0, 0.06);
+  --shadow-flyout:      0 8px 16px rgba(0, 0, 0, 0.14),
+                        0 0 1px rgba(0, 0, 0, 0.10);
+  --shadow-elevated:    0 16px 32px rgba(0, 0, 0, 0.10),
+                        0 4px 8px rgba(0, 0, 0, 0.06);
+
+  /* Corner radii (Windows 11 = 8 / 4 / overlay 8) */
+  --radius-control:     4px;
+  --radius-card:        8px;
+  --radius-overlay:     8px;
+  --radius-pill:        9999px;
+
+  /* Type system mirrors XAML CaptionTextBlockStyle etc. */
+  --type-caption:       12px / 16px;
+  --type-body:          14px / 20px;
+  --type-body-strong:   14px / 20px;
+  --type-body-large:    18px / 24px;
+  --type-subtitle:      20px / 28px;
+  --type-title:         28px / 36px;
+  --type-title-large:   40px / 52px;
+  --type-display:       68px / 92px;
+
+  --maxw:               1080px;
+
+  --acrylic-blur:       saturate(180%) blur(60px);
+}
+
+/* -------- Dark theme ----------------------------------------- */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --accent-base:        #4cc2ff;     /* SystemAccentColorLight2 */
+    --accent-secondary:   #76d2ff;
+    --accent-tertiary:    #99ddff;
+    --accent-on-mica:     #76d2ff;
+    --accent-text-on-bg:  #99ddff;
+
+    --mica-base:          #1c1c1c;
+    --mica-tint-1:        rgba(76, 194, 255, 0.06);
+    --mica-tint-2:        rgba(0, 120, 212, 0.10);
+    --mica-tint-3:        rgba(180, 90, 211, 0.05);
+
+    --layer-1:            rgba(58, 58, 58, 0.50);
+    --layer-2:            rgba(58, 58, 58, 0.30);
+    --layer-alt:          rgba(40, 40, 40, 0.60);
+
+    --card-fill:          rgba(255, 255, 255, 0.0512);
+    --card-fill-secondary:rgba(255, 255, 255, 0.0326);
+    --card-fill-tertiary: rgba(255, 255, 255, 0.0419);
+
+    --control-fill:       rgba(255, 255, 255, 0.0605);
+    --control-fill-hover: rgba(255, 255, 255, 0.0837);
+    --control-fill-press: rgba(255, 255, 255, 0.0326);
+
+    /* dark uses lighter top-edge stroke (light on black) */
+    --stroke-default:     rgba(255, 255, 255, 0.0698);
+    --stroke-default-bot: rgba(0, 0, 0, 0.25);
+    --stroke-card:        rgba(255, 255, 255, 0.0837);
+    --stroke-divider:     rgba(255, 255, 255, 0.0837);
+    --stroke-focus:       #ffffff;
+
+    --text-primary:       rgba(255, 255, 255, 1);
+    --text-secondary:     rgba(255, 255, 255, 0.786);
+    --text-tertiary:      rgba(255, 255, 255, 0.5442);
+    --text-on-accent:     #000000;
+    --text-disabled:      rgba(255, 255, 255, 0.3628);
+
+    --shadow-card:        0 2px 4px rgba(0, 0, 0, 0.30),
+                          0 1px 2px rgba(0, 0, 0, 0.40);
+    --shadow-flyout:      0 8px 16px rgba(0, 0, 0, 0.45),
+                          0 0 1px rgba(0, 0, 0, 0.50);
+    --shadow-elevated:    0 16px 32px rgba(0, 0, 0, 0.45),
+                          0 4px 8px rgba(0, 0, 0, 0.30);
+  }
+}
+
+/* =============================================================
+   Base + Mica background
+   ============================================================= */
+* { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+  font-family: "Segoe UI Variable Text", "Segoe UI Variable", "Segoe UI",
+               -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  font-size: 14px;
+  line-height: 20px;
+  color: var(--text-primary);
+  background: var(--mica-base);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  font-feature-settings: "ss06", "calt", "ss01";
+  font-variation-settings: "wght" 400;
+  min-height: 100vh;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* Mica: tinted gradient blobs that mimic desktop bleed-through.
+   Two layers: large soft color blobs + 1px noise texture.       */
+body::before {
+  content: "";
+  position: fixed;
+  inset: -10vmax;
+  z-index: -2;
+  background:
+    radial-gradient(60vmax 50vmax at 12% 8%,  var(--mica-tint-1) 0%, transparent 60%),
+    radial-gradient(50vmax 45vmax at 88% 18%, var(--mica-tint-2) 0%, transparent 65%),
+    radial-gradient(70vmax 60vmax at 50% 110%,var(--mica-tint-3) 0%, transparent 60%),
+    var(--mica-base);
+  pointer-events: none;
+}
+
+/* Subtle SVG noise to fake Mica's micro-texture. */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0.40;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.55 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+}
+
+@media (prefers-color-scheme: dark) {
+  body::after { opacity: 0.18; mix-blend-mode: soft-light; }
+}
+
+/* Selection */
+::selection { background: var(--accent-base); color: var(--text-on-accent); }
+
+/* Skip-to-content link — visible only when focused */
+.skip-link {
+  position: absolute;
+  left: 12px;
+  top: -100px;
+  z-index: 1000;
+  padding: 8px 16px;
+  background: var(--accent-base);
+  color: var(--text-on-accent);
+  font-weight: 600;
+  font-size: 14px;
+  border-radius: var(--radius-control);
+  text-decoration: none;
+  box-shadow: var(--shadow-flyout);
+  transition: top 160ms cubic-bezier(.55,.55,0,1);
+}
+.skip-link:focus,
+.skip-link:focus-visible {
+  top: 12px;
+  outline: 2px solid var(--stroke-focus);
+  outline-offset: 2px;
+}
+
+a {
+  color: var(--accent-text-on-bg);
+  text-decoration: none;
+  transition: color 120ms cubic-bezier(.55,.55,0,1),
+              opacity 120ms cubic-bezier(.55,.55,0,1);
+}
+a:hover { color: var(--accent-base); text-decoration: underline; text-underline-offset: 2px; text-decoration-thickness: 1px; }
+a:active { opacity: 0.65; }
+
+code, kbd {
+  font-family: "Cascadia Code", "Cascadia Mono", "Consolas", ui-monospace, monospace;
+  font-size: 0.875em;
+  background: var(--card-fill-secondary);
+  padding: 1px 6px;
+  border-radius: var(--radius-control);
+  border: 1px solid var(--stroke-card);
+}
+
+.container {
+  max-width: var(--maxw);
+  margin: 0 auto;
+  padding: 0 32px;
+}
+
+/* =============================================================
+   Acrylic Navigation
+   ============================================================= */
+.nav {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  padding: 8px 0;
+  background: var(--layer-1);
+  -webkit-backdrop-filter: var(--acrylic-blur);
+  backdrop-filter: var(--acrylic-blur);
+  border-bottom: 1px solid var(--stroke-divider);
+}
+
+/* InfoBar-style hairline accent at very top */
+.nav::after {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 1px;
+  background: linear-gradient(90deg,
+    transparent 0%,
+    var(--stroke-default) 20%,
+    var(--stroke-default) 80%,
+    transparent 100%);
+  pointer-events: none;
+}
+
+.nav .container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  height: 40px;
+}
+
+.nav-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--text-primary);
+  padding: 6px 10px;
+  border-radius: var(--radius-control);
+  margin-left: -10px;
+  transition: background-color 120ms;
+}
+.nav-brand:hover { background: var(--control-fill-hover); text-decoration: none; }
+.nav-brand img  { width: 20px; height: 20px; display: block; }
+
+.nav-links { display: flex; gap: 2px; align-items: center; }
+.nav-links a {
+  position: relative;
+  color: var(--text-secondary);
+  font-size: 14px;
+  padding: 6px 12px;
+  border-radius: var(--radius-control);
+  transition: background-color 120ms, color 120ms;
+}
+.nav-links a:hover {
+  color: var(--text-primary);
+  background: var(--control-fill-hover);
+  text-decoration: none;
+}
+.nav-links a:active { background: var(--control-fill-press); }
+.nav-links a[aria-current="page"] {
+  color: var(--text-primary);
+}
+.nav-links a[aria-current="page"]::after {
+  content: "";
+  position: absolute;
+  left: 12px; right: 12px; bottom: 2px;
+  height: 2px;
+  border-radius: 1px;
+  background: var(--accent-base);
+}
+
+/* =============================================================
+   Hero — Display title + Mica window-style subtle frame
+   ============================================================= */
+.hero {
+  padding: 96px 0 72px;
+  text-align: center;
+  position: relative;
+}
+
+.hero h1 {
+  font-family: "Segoe UI Variable Display", "Segoe UI Variable", "Segoe UI", sans-serif;
+  font-size: clamp(40px, 7vw, 68px);
+  line-height: 1.06;
+  font-weight: 600;
+  letter-spacing: -0.022em;
+  margin: 0 0 20px;
+  color: var(--text-primary);
+  font-variation-settings: "wght" 600, "opsz" 36;
+}
+
+/* Subtle vertical fade on the display title for depth */
+.hero h1 {
+  background: linear-gradient(180deg,
+    var(--text-primary) 0%,
+    color-mix(in srgb, var(--text-primary) 78%, transparent) 110%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* "Windows" gets the accent color */
+.hero h1 .accent {
+  color: var(--accent-on-mica);
+  -webkit-text-fill-color: var(--accent-on-mica);
+  background: none;
+}
+
+.hero p.lede {
+  font: 400 var(--type-body-large) "Segoe UI Variable", sans-serif;
+  color: var(--text-secondary);
+  max-width: 640px;
+  margin: 0 auto 36px;
+}
+
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+}
+
+/* WinUI hint chip above hero (optional, added in HTML) */
+.hint-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 auto 28px;
+  padding: 4px 12px 4px 4px;
+  background: var(--card-fill);
+  border: 1px solid var(--stroke-card);
+  border-radius: var(--radius-pill);
+  font-size: 12px;
+  color: var(--text-secondary);
+  box-shadow: var(--shadow-card);
+}
+.hint-pill .dot {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px; height: 22px;
+  border-radius: var(--radius-pill);
+  background: var(--accent-base);
+  color: var(--text-on-accent);
+  font-weight: 600;
+  font-size: 11px;
+}
+
+/* =============================================================
+   Buttons — WinUI AccentButton / Standard button
+   ============================================================= */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 14px;
+  min-height: 32px;
+  border-radius: var(--radius-control);
+  font-family: inherit;
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 20px;
+  border: 1px solid var(--stroke-default);
+  background: var(--control-fill);
+  color: var(--text-primary);
+  cursor: pointer;
+  position: relative;
+  isolation: isolate;
+  transition:
+    background-color 167ms cubic-bezier(.55,.55,0,1),
+    border-color 167ms cubic-bezier(.55,.55,0,1),
+    color 167ms cubic-bezier(.55,.55,0,1),
+    transform 80ms cubic-bezier(.55,.55,0,1);
+  overflow: hidden;
+}
+.btn:hover { text-decoration: none; background: var(--control-fill-hover); }
+.btn:active { background: var(--control-fill-press); transform: scale(0.985); }
+
+/* Signature WinUI bottom-edge highlight (control-stroke) */
+.btn::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  z-index: 1;
+  box-shadow: inset 0 -1px 0 0 var(--stroke-default-bot);
+}
+
+/* Accent (primary) button */
+.btn-primary {
+  background: var(--accent-base);
+  color: var(--text-on-accent);
+  border-color: transparent;
+  box-shadow:
+    inset 0 1px 0 0 rgba(255,255,255,0.10),
+    0 1px 2px rgba(0, 0, 0, 0.10);
+}
+.btn-primary::before {
+  box-shadow: inset 0 -1px 0 0 rgba(0, 0, 0, 0.16);
+}
+.btn-primary:hover {
+  background: color-mix(in srgb, var(--accent-base) 90%, white 0%);
+  filter: brightness(1.07);
+}
+.btn-primary:active {
+  background: color-mix(in srgb, var(--accent-base) 80%, black 0%);
+  filter: brightness(0.93);
+  color: rgba(255, 255, 255, 0.78);
+}
+
+@media (prefers-color-scheme: dark) {
+  .btn-primary:active { color: rgba(0, 0, 0, 0.55); }
+}
+
+/* Secondary inherits standard control look */
+.btn-secondary { /* same as default .btn */ }
+
+/* Make sure button children sit above the bottom-stroke pseudo */
+.btn > * { position: relative; z-index: 2; }
+
+/* Focus visuals: outer black + inner accent (WinUI signature) */
+:focus-visible {
+  outline: 2px solid var(--stroke-focus);
+  outline-offset: 2px;
+  border-radius: var(--radius-control);
+}
+.btn:focus-visible {
+  outline-offset: 2px;
+  box-shadow:
+    inset 0 0 0 2px var(--text-on-accent),
+    0 0 0 2px var(--stroke-focus);
+}
+.btn-secondary:focus-visible {
+  box-shadow:
+    inset 0 0 0 2px var(--mica-base),
+    0 0 0 2px var(--stroke-focus);
+}
+
+/* =============================================================
+   Sections + headings
+   ============================================================= */
+section { padding: 72px 0; position: relative; }
+
+section h2 {
+  font-family: "Segoe UI Variable Display", "Segoe UI Variable", sans-serif;
+  font-size: 28px;
+  line-height: 36px;
+  font-weight: 600;
+  letter-spacing: -0.012em;
+  margin: 0 0 8px;
+  color: var(--text-primary);
+  font-variation-settings: "wght" 600, "opsz" 24;
+}
+
+section .section-lede {
+  color: var(--text-secondary);
+  margin: 0 0 36px;
+  font-size: 14px;
+  line-height: 20px;
+}
+
+/* "Install" section override: was inline `background: var(--bg-soft)`.
+   Replace the inline color via a class that respects Mica layering. */
+#install { background: transparent; }
+#install::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg,
+      transparent 0%,
+      var(--card-fill-tertiary) 20%,
+      var(--card-fill-tertiary) 80%,
+      transparent 100%);
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* =============================================================
+   Feature cards (WinUI Card / Acrylic layered)
+   ============================================================= */
+.features {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 12px;
+}
+
+.feature {
+  position: relative;
+  isolation: isolate;
+  background: var(--card-fill);
+  border: 1px solid var(--stroke-card);
+  border-radius: var(--radius-card);
+  padding: 20px 22px 22px;
+  box-shadow: var(--shadow-card);
+  transition: transform 200ms cubic-bezier(.55,.55,0,1),
+              border-color 200ms,
+              background-color 200ms;
+  overflow: hidden;
+}
+.feature::before {
+  /* signature WinUI "card stroke bottom" sharper line */
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  box-shadow: inset 0 -1px 0 0 var(--stroke-default-bot);
+  z-index: 1;
+}
+.feature:hover {
+  background: color-mix(in srgb, var(--card-fill) 90%, white 5%);
+  transform: translateY(-1px);
+}
+@media (prefers-color-scheme: dark) {
+  .feature:hover {
+    background: color-mix(in srgb, var(--card-fill) 60%, white 6%);
+  }
+}
+
+.feature h3 {
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 600;
+  margin: 0 0 4px;
+  color: var(--text-primary);
+}
+.feature p {
+  color: var(--text-secondary);
+  font-size: 13px;
+  line-height: 18px;
+  margin: 0;
+}
+
+/* Icon tile — matches WinUI Mica accent square */
+.feature-glyph {
+  display: inline-flex;
+  width: 36px; height: 36px;
+  border-radius: var(--radius-card);
+  align-items: center;
+  justify-content: center;
+  background:
+    linear-gradient(135deg,
+      color-mix(in srgb, var(--accent-base) 18%, transparent),
+      color-mix(in srgb, var(--accent-base) 8%, transparent));
+  color: var(--accent-on-mica);
+  font-size: 18px;
+  margin-bottom: 14px;
+  border: 1px solid color-mix(in srgb, var(--accent-base) 14%, transparent);
+  box-shadow: inset 0 -1px 0 0 color-mix(in srgb, var(--accent-base) 22%, transparent);
+}
+.feature-glyph svg { width: 18px; height: 18px; display: block; }
+
+/* =============================================================
+   Install split cards
+   ============================================================= */
+.install-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+@media (max-width: 760px) {
+  .install-grid { grid-template-columns: 1fr; }
+}
+
+.install-card {
+  position: relative;
+  isolation: isolate;
+  background: var(--card-fill);
+  border: 1px solid var(--stroke-card);
+  border-radius: var(--radius-card);
+  padding: 24px;
+  box-shadow: var(--shadow-card);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.install-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  box-shadow: inset 0 -1px 0 0 var(--stroke-default-bot);
+  z-index: 1;
+}
+/* Recommended card gets a quiet accent wash + top-edge accent line.
+   The top accent line uses an inset box-shadow so it doesn't collide
+   with the reveal-highlight ::after pseudo on the same element. */
+.install-card:has(.badge-pill.recommended) {
+  background:
+    linear-gradient(180deg,
+      color-mix(in srgb, var(--accent-base) 7%, transparent) 0%,
+      transparent 40%),
+    var(--card-fill);
+  border-color: color-mix(in srgb, var(--accent-base) 22%, var(--stroke-card));
+  box-shadow:
+    inset 0 2px 0 0 var(--accent-base),
+    var(--shadow-card);
+}
+
+.install-card h3 {
+  margin: 0 0 4px;
+  font-size: 18px;
+  line-height: 24px;
+  font-weight: 600;
+  color: var(--text-primary);
+  font-variation-settings: "wght" 600;
+}
+.install-card p {
+  color: var(--text-secondary);
+  font-size: 14px;
+  line-height: 20px;
+  margin: 0 0 20px;
+  flex: 1;
+}
+
+.install-card .btn { align-self: flex-start; }
+
+/* Badge pills */
+.badge-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 3px 10px;
+  border-radius: var(--radius-pill);
+  margin-bottom: 14px;
+  border: 1px solid transparent;
+  background: var(--card-fill-secondary);
+  color: var(--text-secondary);
+}
+.badge-pill.recommended {
+  background: color-mix(in srgb, var(--accent-base) 14%, transparent);
+  color: var(--accent-on-mica);
+  border-color: color-mix(in srgb, var(--accent-base) 28%, transparent);
+}
+.badge-pill.foss {
+  background: rgba(46, 160, 67, 0.14);
+  color: #1b6f30;
+  border-color: rgba(46, 160, 67, 0.28);
+}
+@media (prefers-color-scheme: dark) {
+  .badge-pill.foss { color: #6dd58a; border-color: rgba(109, 213, 138, 0.28); }
+}
+
+/* =============================================================
+   Screenshots — gallery with graceful missing-image placeholders
+   ============================================================= */
+.shots {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-auto-rows: auto;
+  gap: 12px;
+}
+.shots .shot--lead { grid-column: 1 / -1; }
+
+@media (max-width: 720px) {
+  .shots { grid-template-columns: 1fr; }
+}
+
+.shot {
+  position: relative;
+  margin: 0;
+  background: var(--card-fill);
+  border: 1px solid var(--stroke-card);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+  overflow: hidden;
+  transition: transform 200ms cubic-bezier(.55,.55,0,1),
+              box-shadow 200ms cubic-bezier(.55,.55,0,1);
+}
+.shot::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  box-shadow: inset 0 -1px 0 0 var(--stroke-default-bot);
+  z-index: 2;
+}
+.shot:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-elevated);
+}
+
+.shot img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+  background: var(--card-fill-secondary);
+}
+.shot--lead img { aspect-ratio: 16 / 9; }
+
+.shot figcaption {
+  padding: 14px 18px 16px;
+  color: var(--text-secondary);
+  font-size: 13px;
+  line-height: 18px;
+  border-top: 1px solid var(--stroke-divider);
+}
+
+/* Missing-image state: hide broken <img>, show a styled placeholder
+   that mimics a Mica-tinted window pane with the screenshot label. */
+.shot--missing img { display: none; }
+.shot--missing {
+  background:
+    linear-gradient(135deg,
+      color-mix(in srgb, var(--accent-base) 6%, transparent) 0%,
+      transparent 60%),
+    repeating-linear-gradient(45deg,
+      var(--card-fill-secondary) 0,
+      var(--card-fill-secondary) 14px,
+      transparent 14px,
+      transparent 28px),
+    var(--card-fill);
+}
+.shot--missing::after {
+  content: "Screenshot · " attr(data-label);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-tertiary);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.shot--missing.shot--lead::after { aspect-ratio: 16 / 9; }
+
+/* =============================================================
+   FAQ — WinUI Expander
+   ============================================================= */
+.faq {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  max-width: 820px;
+}
+
+.faq-item {
+  position: relative;
+  background: var(--card-fill);
+  border: 1px solid var(--stroke-card);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+  overflow: hidden;
+  transition: border-color 200ms, background-color 200ms;
+}
+.faq-item::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  box-shadow: inset 0 -1px 0 0 var(--stroke-default-bot);
+  z-index: 1;
+}
+.faq-item[open] {
+  background: color-mix(in srgb, var(--card-fill) 92%, white 4%);
+}
+@media (prefers-color-scheme: dark) {
+  .faq-item[open] {
+    background: color-mix(in srgb, var(--card-fill) 60%, white 5%);
+  }
+}
+
+.faq-item summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px 20px;
+  cursor: pointer;
+  user-select: none;
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 600;
+  color: var(--text-primary);
+  list-style: none;
+  position: relative;
+  z-index: 2;
+  transition: background-color 120ms;
+}
+.faq-item summary::-webkit-details-marker { display: none; }
+.faq-item summary::marker { content: ""; }
+.faq-item summary:hover { background: var(--control-fill-hover); }
+.faq-item summary:active { background: var(--control-fill-press); }
+.faq-item summary:focus-visible {
+  outline: 2px solid var(--stroke-focus);
+  outline-offset: -2px;
+  border-radius: var(--radius-card);
+}
+
+.faq-item .chev {
+  flex-shrink: 0;
+  color: var(--text-secondary);
+  transition: transform 200ms cubic-bezier(.55,.55,0,1);
+}
+.faq-item[open] .chev { transform: rotate(180deg); }
+
+.faq-body {
+  padding: 0 20px 18px;
+  position: relative;
+  z-index: 2;
+  border-top: 1px solid var(--stroke-divider);
+  margin-top: -1px;
+}
+.faq-body p {
+  margin: 14px 0 0;
+  color: var(--text-secondary);
+  font-size: 14px;
+  line-height: 22px;
+}
+.faq-body p:first-child { margin-top: 14px; }
+
+/* =============================================================
+   Privacy callout — WinUI InfoBar
+   ============================================================= */
+.privacy-callout {
+  position: relative;
+  background: var(--card-fill);
+  border: 1px solid var(--stroke-card);
+  border-radius: var(--radius-card);
+  padding: 20px 24px;
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+  overflow: hidden;
+  box-shadow: var(--shadow-card);
+}
+.privacy-callout::before {
+  /* InfoBar accent stripe on the left */
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 4px;
+  background: var(--accent-base);
+}
+.privacy-callout .glyph {
+  flex-shrink: 0;
+  width: 40px; height: 40px;
+  border-radius: var(--radius-card);
+  background:
+    linear-gradient(135deg,
+      color-mix(in srgb, var(--accent-base) 18%, transparent),
+      color-mix(in srgb, var(--accent-base) 6%, transparent));
+  color: var(--accent-on-mica);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px;
+  border: 1px solid color-mix(in srgb, var(--accent-base) 16%, transparent);
+}
+.privacy-callout .glyph svg { width: 20px; height: 20px; }
+.privacy-callout h3 {
+  margin: 0 0 4px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+.privacy-callout p {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 14px;
+  line-height: 20px;
+}
+
+/* =============================================================
+   Footer
+   ============================================================= */
+footer {
+  border-top: 1px solid var(--stroke-divider);
+  padding: 28px 0 36px;
+  margin-top: 24px;
+  color: var(--text-tertiary);
+  font-size: 12px;
+  line-height: 16px;
+  background: var(--layer-2);
+  -webkit-backdrop-filter: var(--acrylic-blur);
+  backdrop-filter: var(--acrylic-blur);
+}
+footer .container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: center;
+}
+footer a { color: var(--text-secondary); }
+footer a:hover { color: var(--text-primary); }
+.footer-links { display: flex; gap: 4px; flex-wrap: wrap; }
+.footer-links a {
+  padding: 4px 10px;
+  border-radius: var(--radius-control);
+  transition: background-color 120ms;
+}
+.footer-links a:hover { background: var(--control-fill-hover); text-decoration: none; }
+
+/* =============================================================
+   Privacy page typography (.prose)
+   ============================================================= */
+.prose {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 72px 32px 48px;
+}
+.prose h1 {
+  font-family: "Segoe UI Variable Display", "Segoe UI Variable", sans-serif;
+  font-size: 40px;
+  line-height: 52px;
+  font-weight: 600;
+  letter-spacing: -0.018em;
+  margin: 0 0 4px;
+  font-variation-settings: "wght" 600, "opsz" 28;
+}
+.prose .meta {
+  color: var(--text-tertiary);
+  font-size: 12px;
+  margin: 0 0 32px;
+}
+.prose h2 {
+  font-size: 20px;
+  line-height: 28px;
+  font-weight: 600;
+  margin: 40px 0 12px;
+  letter-spacing: -0.005em;
+  color: var(--text-primary);
+}
+.prose p { margin: 0 0 16px; color: var(--text-secondary); font-size: 14px; line-height: 22px; }
+.prose strong { color: var(--text-primary); font-weight: 600; }
+.prose ul, .prose ol { padding-left: 22px; margin: 0 0 16px; color: var(--text-secondary); }
+.prose li { margin-bottom: 6px; }
+
+.prose table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  margin: 12px 0 24px;
+  font-size: 13px;
+  background: var(--card-fill);
+  border: 1px solid var(--stroke-card);
+  border-radius: var(--radius-card);
+  overflow: hidden;
+  box-shadow: var(--shadow-card);
+}
+.prose th, .prose td {
+  padding: 10px 14px;
+  text-align: left;
+  vertical-align: top;
+  border-bottom: 1px solid var(--stroke-divider);
+  color: var(--text-secondary);
+}
+.prose tr:last-child td { border-bottom: 0; }
+.prose th {
+  background: var(--card-fill-secondary);
+  font-weight: 600;
+  color: var(--text-primary);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.prose .summary {
+  position: relative;
+  background: var(--card-fill);
+  border: 1px solid var(--stroke-card);
+  border-radius: var(--radius-card);
+  padding: 16px 20px 16px 24px;
+  margin: 24px 0 32px;
+  box-shadow: var(--shadow-card);
+  overflow: hidden;
+}
+.prose .summary::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 4px;
+  background: var(--accent-base);
+}
+.prose .summary p { margin: 0; color: var(--text-primary); }
+
+/* =============================================================
+   Reveal-on-scroll (added by JS — class applied on intersect)
+   ============================================================= */
+.fade-in {
+  opacity: 0;
+  transform: translateY(8px);
+  transition:
+    opacity 500ms cubic-bezier(.16,1,.3,1),
+    transform 500ms cubic-bezier(.16,1,.3,1);
+}
+.fade-in.visible { opacity: 1; transform: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0ms !important;
+    transition-duration: 0ms !important;
+  }
+  .fade-in { opacity: 1; transform: none; }
+}
+
+/* =============================================================
+   Responsive tweaks
+   ============================================================= */
+@media (max-width: 720px) {
+  .container { padding: 0 20px; }
+  .nav-links a:not(.btn) { padding: 6px 8px; }
+  .nav-links { gap: 0; }
+  .hero { padding: 64px 0 48px; }
+  section { padding: 56px 0; }
+  .feature { padding: 18px; }
+  .install-card { padding: 20px; }
+}

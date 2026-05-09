@@ -1,0 +1,33 @@
+'ui':
+  - changed-files:
+      - any-glob-to-any-file:
+          - 'AutoCenter/MainWindow.{xaml,xaml.cs}'
+          - 'AutoCenter/App.xaml{,.cs}'
+
+'core':
+  - changed-files:
+      - any-glob-to-any-file:
+          - 'AutoCenter/Services/**'
+          - 'AutoCenter/Models/**'
+          - 'AutoCenter/Program.cs'
+
+'packaging':
+  - changed-files:
+      - any-glob-to-any-file:
+          - 'AutoCenter/Package.appxmanifest'
+          - 'AutoCenter/AutoCenter.csproj'
+          - 'AutoCenter/app.manifest'
+          - 'AutoCenter/Assets/**'
+
+'ci':
+  - changed-files:
+      - any-glob-to-any-file:
+          - '.github/workflows/**'
+          - '.github/build-files/**'
+
+'docs':
+  - changed-files:
+      - any-glob-to-any-file:
+          - '*.md'
+          - '.github/*.md'
+          - '.github/ISSUE_TEMPLATE/**'

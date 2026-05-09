@@ -1,0 +1,87 @@
+name: Bug Report
+description: Report a bug in Auto Center
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to file a bug report! Please fill out the information below so we can reproduce and fix the issue.
+
+  - type: input
+    id: version
+    attributes:
+      label: Auto Center version
+      description: Version shown on the About page (e.g. 1.0.0)
+      placeholder: "1.0.0"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: install_method
+    attributes:
+      label: Install method
+      options:
+        - Microsoft Store
+        - GitHub release (msixbundle)
+        - Built from source
+    validations:
+      required: true
+
+  - type: input
+    id: windows_version
+    attributes:
+      label: Windows version
+      description: "Run `winver` and copy the version (e.g. Windows 11 23H2 22631.4317)"
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Describe the bug
+      description: A clear and concise description of what the bug is.
+    validations:
+      required: true
+
+  - type: textarea
+    id: repro
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Open Auto Center
+        2. ...
+        3. ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Crash log
+      description: "If a crash occurred, paste the contents of `%LOCALAPPDATA%\\AutoCenter\\crash.log`"
+      render: shell
+    validations:
+      required: false
+
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: Screenshots
+      description: Drag and drop any helpful screenshots here.
+    validations:
+      required: false

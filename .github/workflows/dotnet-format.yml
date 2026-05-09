@@ -1,0 +1,25 @@
+name: .NET format
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+permissions:
+  contents: read
+
+jobs:
+  dotnet-format:
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+      - name: Restore dependencies
+        run: dotnet restore AutoCenter/AutoCenter.csproj /p:Platform=x64
+      - name: Format
+        run: dotnet format AutoCenter/AutoCenter.csproj --verify-no-changes --verbosity diagnostic
