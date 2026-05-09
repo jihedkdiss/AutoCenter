@@ -13,6 +13,11 @@ jobs:
   dotnet-format:
     runs-on: windows-latest
 
+    # WindowsAppSDKSelfContained=true rejects AnyCPU during MSBuild project load,
+    # so dotnet-format needs an explicit Windows architecture.
+    env:
+      Platform: x64
+
     steps:
       - uses: actions/checkout@v4
       - name: Setup .NET
