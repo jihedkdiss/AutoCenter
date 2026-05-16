@@ -43,7 +43,7 @@
 
   <ItemGroup>
     <PackageReference Include="CommunityToolkit.WinUI.Controls.SettingsControls" Version="8.2.251219" />
-    <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.8.260416003" />
+    <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.8.260508005" />
   </ItemGroup>
 
   <ItemGroup>
