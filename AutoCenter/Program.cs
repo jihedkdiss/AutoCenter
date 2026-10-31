@@ -1,9 +1,9 @@
 using System;
 using System.Threading;
+using AutoCenter.Services;
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml;
 using Microsoft.Windows.AppLifecycle;
-using AutoCenter.Services;
 
 namespace AutoCenter;
 
