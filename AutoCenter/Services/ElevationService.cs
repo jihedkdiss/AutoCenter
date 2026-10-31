@@ -24,7 +24,7 @@ public static class ElevationService
         }
     }
 
-    public static bool RelaunchAsAdmin()
+    public static bool RelaunchAsAdmin(string? arguments = null)
     {
         var exePath = Environment.ProcessPath ?? Process.GetCurrentProcess().MainModule?.FileName;
         if (string.IsNullOrEmpty(exePath))
@@ -39,6 +39,7 @@ public static class ElevationService
                 FileName = exePath,
                 UseShellExecute = true,
                 Verb = "runas",
+                Arguments = arguments ?? string.Empty,
                 WorkingDirectory = AppContext.BaseDirectory
             };
             Process.Start(psi);

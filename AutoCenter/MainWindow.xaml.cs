@@ -39,6 +39,7 @@ public sealed partial class MainWindow : Window
         ApplyMicaBackdrop();
 
         _settings = _settingsStore.Load();
+        RestoreWindowPlacement();
         _placementService = new WindowPlacementService(_settings);
         _hotkeyService = new HotkeyService(this);
         _trayIconService = new TrayIconService(this);
@@ -54,7 +55,6 @@ public sealed partial class MainWindow : Window
         try
         {
             ConfigureNumericControls();
-            ResizeWindow();
             RefreshMonitors();
             ExcludedProcessesList.ItemsSource = _excludedProcesses;
             LoadSettingsIntoControls();
@@ -197,10 +197,46 @@ public sealed partial class MainWindow : Window
 
     private void ResizeWindow()
     {
-        var hwnd = WindowNative.GetWindowHandle(this);
-        var windowId = Win32Interop.GetWindowIdFromWindow(hwnd);
-        var appWindow = AppWindow.GetFromWindowId(windowId);
-        appWindow.Resize(new SizeInt32(780, 620));
+        AppWindow.Resize(new SizeInt32(780, 620));
+    }
+
+    private void RestoreWindowPlacement()
+    {
+        if (_settings.WindowX is not int x || _settings.WindowY is not int y ||
+            _settings.WindowWidth is not int width || _settings.WindowHeight is not int height ||
+            width < 400 || height < 300)
+        {
+            ResizeWindow();
+            return;
+        }
+
+        var visible = _monitorService.GetMonitors().Any(monitor =>
+            Math.Min(x + width, monitor.WorkingArea.Right) - Math.Max(x, monitor.WorkingArea.Left) >= 100 &&
+            Math.Min(y + height, monitor.WorkingArea.Bottom) - Math.Max(y, monitor.WorkingArea.Top) >= 100);
+        if (visible)
+        {
+            AppWindow.MoveAndResize(new Windows.Graphics.RectInt32(x, y, width, height));
+        }
+        else
+        {
+            ResizeWindow();
+        }
+    }
+
+    private void SaveWindowPlacement()
+    {
+        if (AppWindow.Presenter is OverlappedPresenter presenter &&
+            (presenter.State == OverlappedPresenterState.Maximized || presenter.State == OverlappedPresenterState.Minimized))
+        {
+            return;
+        }
+
+        var position = AppWindow.Position;
+        var size = AppWindow.Size;
+        _settings.WindowX = position.X;
+        _settings.WindowY = position.Y;
+        _settings.WindowWidth = size.Width;
+        _settings.WindowHeight = size.Height;
     }
 
     private void RefreshMonitors()
@@ -232,6 +268,7 @@ public sealed partial class MainWindow : Window
         SkipMaximizedCheckBox.IsChecked = _settings.SkipMaximizedWindows;
         IncludeFixedSizeCheckBox.IsChecked = _settings.IncludeFixedSizeWindows;
         StartupToggle.IsOn = _settings.LaunchAtStartup;
+        AlwaysAdminToggle.IsOn = _settings.AlwaysRunAsAdministrator;
         WorkingAreaCheckBox.IsChecked = _settings.UseWorkingArea;
 
         MonitorModeComboBox.SelectedIndex = (int)_settings.TargetMonitorMode;
@@ -299,6 +336,7 @@ public sealed partial class MainWindow : Window
         _settings.PollIntervalMs = SanitizeNumber(PollIntervalBox.Value, _settings.PollIntervalMs);
         _settings.ActivationDelayMs = SanitizeNumber(ActivationDelayBox.Value, _settings.ActivationDelayMs);
         _settings.LaunchAtStartup = StartupToggle.IsOn;
+        _settings.AlwaysRunAsAdministrator = AlwaysAdminToggle.IsOn;
         _settings.HotkeyModifiers = GetHotkeyModifiers();
         _settings.HotkeyVirtualKey = GetSelectedHotkeyVirtualKey();
         _settings.HotkeyBypassFixedSize = HotkeyBypassFixedSizeCheckBox.IsChecked == true;
@@ -612,8 +650,27 @@ public sealed partial class MainWindow : Window
         if (ElevationService.RelaunchAsAdmin())
         {
             // Save current settings before exiting so the elevated instance picks them up.
+            SaveWindowPlacement();
             _settingsStore.Save(_settings);
             Application.Current.Exit();
+        }
+    }
+
+    private void OnAlwaysAdminToggled(object sender, RoutedEventArgs e)
+    {
+        if (_loading) return;
+        ApplySettings();
+        if (AlwaysAdminToggle.IsOn && !ElevationService.IsElevated)
+        {
+            OnElevateClick(sender, e);
+        }
+        else if (AlwaysAdminToggle.IsOn)
+        {
+            ScheduledElevationService.EnsureTasks();
+        }
+        else
+        {
+            ScheduledElevationService.RemoveTasks();
         }
     }
 
@@ -833,6 +890,7 @@ public sealed partial class MainWindow : Window
             AppWindow.Closing -= OnAppWindowClosing;
             _loading = false;
             CaptureSettingsFromControls();
+            SaveWindowPlacement();
             _settingsStore.Save(_settings);
             _hotkeyService.Dispose();
             _trayIconService.Dispose();
@@ -843,6 +901,8 @@ public sealed partial class MainWindow : Window
 
     private void OnAppWindowClosing(AppWindow sender, AppWindowClosingEventArgs args)
     {
+        SaveWindowPlacement();
+        _settingsStore.Save(_settings);
         args.Cancel = true;
         sender.Hide();
     }
@@ -853,6 +913,7 @@ public sealed partial class MainWindow : Window
         AppWindow.Closing -= OnAppWindowClosing;
         _loading = false;
         CaptureSettingsFromControls();
+        SaveWindowPlacement();
         _settingsStore.Save(_settings);
         _hotkeyService.Dispose();
         _trayIconService.Dispose();
@@ -864,6 +925,7 @@ public sealed partial class MainWindow : Window
     {
         _loading = false;
         CaptureSettingsFromControls();
+        SaveWindowPlacement();
         _settingsStore.Save(_settings);
         _hotkeyService.Dispose();
         _trayIconService.Dispose();

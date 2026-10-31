@@ -867,6 +867,14 @@
 
                             <TextBlock Text="Permissions" Style="{StaticResource GroupHeaderStyle}" />
 
+                            <tk:SettingsCard Header="Always run as administrator"
+                                             Description="Approve setup once, then launch through a Windows scheduled task without repeated UAC prompts.">
+                                <tk:SettingsCard.HeaderIcon>
+                                    <FontIcon Glyph="&#xE72E;" />
+                                </tk:SettingsCard.HeaderIcon>
+                                <ToggleSwitch x:Name="AlwaysAdminToggle" Toggled="OnAlwaysAdminToggled" />
+                            </tk:SettingsCard>
+
                             <tk:SettingsCard x:Name="ElevationCard"
                                              Header="Run as administrator"
                                              Description="Required to center windows owned by elevated apps (Task Manager, Registry Editor, etc.). Restarts AutoCenter with admin rights.">

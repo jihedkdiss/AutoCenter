@@ -46,6 +46,11 @@ public sealed class AppSettings
     public bool LaunchAtStartup { get; set; } = true;
     public bool HideTrayIcon { get; set; }
     public int Theme { get; set; }
+    public bool AlwaysRunAsAdministrator { get; set; }
+    public int? WindowX { get; set; }
+    public int? WindowY { get; set; }
+    public int? WindowWidth { get; set; }
+    public int? WindowHeight { get; set; }
 }
 
 public enum TargetMonitorMode

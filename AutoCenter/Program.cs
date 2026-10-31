@@ -3,6 +3,7 @@ using System.Threading;
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml;
 using Microsoft.Windows.AppLifecycle;
+using AutoCenter.Services;
 
 namespace AutoCenter;
 
@@ -12,6 +13,22 @@ public static class Program
     private static int Main(string[] args)
     {
         WinRT.ComWrappersSupport.InitializeComWrappers();
+
+        // Launch through a registered elevated task before claiming the regular instance key.
+        var startMinimized = args.Contains("--minimized") ||
+            AppInstance.GetCurrent().GetActivatedEventArgs()?.Kind == ExtendedActivationKind.StartupTask;
+        if (new SettingsStore().Load().AlwaysRunAsAdministrator)
+        {
+            if (ElevationService.IsElevated)
+            {
+                ScheduledElevationService.EnsureTasks();
+            }
+            else if (ScheduledElevationService.TryRun(startMinimized) ||
+                     ElevationService.RelaunchAsAdmin(startMinimized ? "--minimized" : null))
+            {
+                return 0;
+            }
+        }
 
         if (DecideRedirection())
         {
@@ -30,7 +47,8 @@ public static class Program
 
     private static bool DecideRedirection()
     {
-        var keyInstance = AppInstance.FindOrRegisterForKey("AutoCenter.SingleInstance");
+        var keyInstance = AppInstance.FindOrRegisterForKey(
+            ElevationService.IsElevated ? "AutoCenter.AdminInstance" : "AutoCenter.SingleInstance");
         if (keyInstance.IsCurrent)
         {
             return false;
