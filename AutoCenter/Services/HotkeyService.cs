@@ -90,6 +90,9 @@ public sealed class HotkeyService : IDisposable
         _ => vkCode
     };
 
+    private static bool MatchesSequenceKey(int rawVk, int configuredVk) =>
+        rawVk == configuredVk || NormalizeModifierVk(rawVk) == configuredVk;
+
     private IntPtr HookCallback(int nCode, IntPtr wParam, IntPtr lParam)
     {
         if (nCode >= 0 && (wParam == (IntPtr)WmKeyup || wParam == (IntPtr)WmSyskeyup))
@@ -97,7 +100,7 @@ public sealed class HotkeyService : IDisposable
             int rawVk = Marshal.ReadInt32(lParam);
             int vkCode = NormalizeModifierVk(rawVk);
 
-            if (_settings.UseHotkeySequence && vkCode == _settings.HotkeySequenceKey)
+            if (_settings.UseHotkeySequence && MatchesSequenceKey(rawVk, _settings.HotkeySequenceKey))
             {
                 long currentTicks = DateTime.Now.Ticks;
                 long elapsedMs = (currentTicks - _lastKeyPressTicks) / TimeSpan.TicksPerMillisecond;
@@ -118,6 +121,12 @@ public sealed class HotkeyService : IDisposable
                     _sequenceCounter = 0;
                     HotkeyPressed?.Invoke(this, EventArgs.Empty);
                 }
+            }
+            else if (_settings.UseHotkeySequence &&
+                     NormalizeModifierVk(rawVk) == NormalizeModifierVk(_settings.HotkeySequenceKey))
+            {
+                // A press of the other side must not complete a side-specific sequence.
+                _sequenceCounter = 0;
             }
             else if (!_settings.UseHotkeySequence && vkCode == _settings.HotkeyVirtualKey)
             {

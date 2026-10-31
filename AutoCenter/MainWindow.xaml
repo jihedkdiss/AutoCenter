@@ -584,6 +584,8 @@
                                     <tk:SettingsCard x:Name="SequenceKeyCard" Header="Sequence key" Visibility="Collapsed">
                                         <ComboBox x:Name="SequenceKeyComboBox" SelectionChanged="OnSettingChanged" MinWidth="160">
                                             <ComboBoxItem Content="Shift" Tag="16" />
+                                            <ComboBoxItem Content="Left Shift" Tag="160" />
+                                            <ComboBoxItem Content="Right Shift" Tag="161" />
                                             <ComboBoxItem Content="Ctrl" Tag="17" />
                                             <ComboBoxItem Content="Alt" Tag="18" />
                                         </ComboBox>

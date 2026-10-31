@@ -475,6 +475,8 @@ public sealed partial class MainWindow : Window
     private static string SequenceKeyName(int virtualKey) => virtualKey switch
     {
         16 => "Shift",
+        160 => "Left Shift",
+        161 => "Right Shift",
         17 => "Ctrl",
         18 => "Alt",
         _ => "?"
