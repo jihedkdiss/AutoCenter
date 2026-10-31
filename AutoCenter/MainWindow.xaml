@@ -664,14 +664,32 @@
                                 <CheckBox x:Name="IncludeFixedSizeCheckBox" MinWidth="0" Checked="OnSettingChanged" Unchecked="OnSettingChanged" />
                             </tk:SettingsCard>
 
-                            <tk:SettingsCard Header="Excluded process names"
-                                             Description="Process names listed here are never moved (no .exe needed)."
+                            <tk:SettingsCard Header="Excluded apps"
+                                             Description="Choose an open app to keep its windows in place."
                                              ContentAlignment="Vertical"
                                              HorizontalContentAlignment="Stretch">
                                 <tk:SettingsCard.HeaderIcon>
                                     <FontIcon Glyph="&#xE71F;" />
                                 </tk:SettingsCard.HeaderIcon>
                                 <StackPanel Spacing="8" HorizontalAlignment="Stretch">
+                                    <TextBlock Text="Choose an open app" Style="{ThemeResource CaptionTextBlockStyle}" />
+                                    <Grid ColumnSpacing="8">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="Auto" />
+                                        </Grid.ColumnDefinitions>
+                                        <ComboBox x:Name="RunningAppsComboBox"
+                                                  PlaceholderText="Select an app"
+                                                  DisplayMemberPath="DisplayName"
+                                                  SelectionChanged="OnRunningAppSelectionChanged"
+                                                  HorizontalAlignment="Stretch" />
+                                        <Button Grid.Column="1" Click="OnRefreshRunningAppsClick" ToolTipService.ToolTip="Refresh open apps">
+                                            <FontIcon Glyph="&#xE72C;" FontSize="14" />
+                                        </Button>
+                                        <Button x:Name="AddRunningAppButton" Grid.Column="2" Content="Exclude" Click="OnAddRunningAppClick" IsEnabled="False" />
+                                    </Grid>
+                                    <TextBlock Text="Or enter a process name" Style="{ThemeResource CaptionTextBlockStyle}" />
                                     <Grid ColumnSpacing="8">
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="*" />
@@ -724,7 +742,7 @@
                                         </ListView>
                                     </Border>
                                     <TextBlock x:Name="ExcludedProcessesEmptyText"
-                                               Text="No exclusions yet — add a process name above."
+                                               Text="No excluded apps yet."
                                                Style="{ThemeResource CaptionTextBlockStyle}"
                                                Foreground="{ThemeResource TextFillColorSecondaryBrush}"
                                                Visibility="Collapsed" />

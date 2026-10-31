@@ -9,7 +9,7 @@
   <Identity
     Name="JihedKdiss.AutoCenter"
     Publisher="CN=596D3380-CDB9-4F95-8A87-41D57AB91BFE"
-    Version="1.0.0.0" />
+    Version="1.1.0.0" />
 
   <Properties>
     <DisplayName>Auto Center</DisplayName>

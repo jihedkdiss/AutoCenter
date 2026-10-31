@@ -551,6 +551,7 @@ public sealed partial class MainWindow : Window
         DisplaysPage.Visibility = tag == "displays" ? Visibility.Visible : Visibility.Collapsed;
         HotkeyPage.Visibility = tag == "hotkey" ? Visibility.Visible : Visibility.Collapsed;
         AdvancedPage.Visibility = tag == "advanced" ? Visibility.Visible : Visibility.Collapsed;
+        if (tag == "advanced") RefreshRunningApps();
         AboutPage.Visibility = tag == "about" ? Visibility.Visible : Visibility.Collapsed;
         SettingsPage.Visibility = tag == "settings" ? Visibility.Visible : Visibility.Collapsed;
     }
@@ -679,6 +680,29 @@ public sealed partial class MainWindow : Window
         AddExcludedProcessFromInput();
     }
 
+    private void OnRefreshRunningAppsClick(object sender, RoutedEventArgs e) => RefreshRunningApps();
+
+    private void RefreshRunningApps()
+    {
+        RunningAppsComboBox.ItemsSource = WindowAppService.GetRunningApps();
+        RunningAppsComboBox.SelectedItem = null;
+        AddRunningAppButton.IsEnabled = false;
+    }
+
+    private void OnRunningAppSelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+        AddRunningAppButton.IsEnabled = RunningAppsComboBox.SelectedItem is WindowAppService.RunningApp;
+    }
+
+    private void OnAddRunningAppClick(object sender, RoutedEventArgs e)
+    {
+        if (RunningAppsComboBox.SelectedItem is WindowAppService.RunningApp app)
+        {
+            AddExcludedProcess(app.ProcessName);
+            RunningAppsComboBox.SelectedItem = null;
+        }
+    }
+
     private void OnNewExcludedProcessKeyDown(object sender, KeyRoutedEventArgs e)
     {
         if (e.Key == VirtualKey.Enter)
@@ -690,7 +714,13 @@ public sealed partial class MainWindow : Window
 
     private void AddExcludedProcessFromInput()
     {
-        var name = NewExcludedProcessBox.Text?.Trim();
+        AddExcludedProcess(NewExcludedProcessBox.Text);
+        NewExcludedProcessBox.Text = string.Empty;
+    }
+
+    private void AddExcludedProcess(string? input)
+    {
+        var name = input?.Trim();
         if (string.IsNullOrEmpty(name))
         {
             return;
@@ -709,12 +739,10 @@ public sealed partial class MainWindow : Window
 
         if (_excludedProcesses.Any(p => string.Equals(p, name, StringComparison.OrdinalIgnoreCase)))
         {
-            NewExcludedProcessBox.Text = string.Empty;
             return;
         }
 
         _excludedProcesses.Add(name);
-        NewExcludedProcessBox.Text = string.Empty;
         UpdateExcludedProcessesEmptyState();
         ApplySettings();
     }

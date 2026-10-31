@@ -250,7 +250,8 @@ public sealed class WindowPlacementService : IDisposable
             }
 
             var windowHandle = NativeMethods.GetForegroundWindow();
-            if (windowHandle != IntPtr.Zero && windowHandle != _lastForegroundWindow)
+            if (windowHandle != IntPtr.Zero && windowHandle != _lastForegroundWindow &&
+                !WindowAppService.IsUnresolvedHostedWindow(windowHandle))
             {
                 _lastForegroundWindow = windowHandle;
                 if (!IsExcluded(windowHandle))
@@ -303,6 +304,7 @@ public sealed class WindowPlacementService : IDisposable
     private bool IsExcluded(IntPtr windowHandle)
     {
         if (windowHandle == IntPtr.Zero) return true;
+        if (WindowAppService.IsUnresolvedHostedWindow(windowHandle)) return true;
 
         lock (_lock)
         {
@@ -311,13 +313,10 @@ public sealed class WindowPlacementService : IDisposable
                 return true;
             }
 
-            var processName = GetProcessName(windowHandle);
-            if (!string.IsNullOrEmpty(processName))
+            if (WindowAppService.GetProcessNames(windowHandle).Any(name =>
+                    MatchesExcludedProcess(name, _settings.ExcludedProcessNames)))
             {
-                if (_settings.ExcludedProcessNames.Any(name => string.Equals(name, processName, StringComparison.OrdinalIgnoreCase)))
-                {
-                    return true;
-                }
+                return true;
             }
         }
 
@@ -338,21 +337,11 @@ public sealed class WindowPlacementService : IDisposable
         return false;
     }
 
-    private static string GetProcessName(IntPtr windowHandle)
-    {
-        _ = NativeMethods.GetWindowThreadProcessId(windowHandle, out var processId);
-        if (processId == 0) return string.Empty;
-
-        try
-        {
-            using var process = System.Diagnostics.Process.GetProcessById((int)processId);
-            return process.ProcessName;
-        }
-        catch
-        {
-            return string.Empty;
-        }
-    }
+    private static bool MatchesExcludedProcess(string processName, IEnumerable<string> excludedNames) =>
+        !string.IsNullOrEmpty(processName) && excludedNames.Any(name =>
+            string.Equals(name, processName, StringComparison.OrdinalIgnoreCase) ||
+            (string.Equals(name, "Calculator", StringComparison.OrdinalIgnoreCase) &&
+             string.Equals(processName, "CalculatorApp", StringComparison.OrdinalIgnoreCase)));
 
     private static string GetWindowClass(IntPtr windowHandle)
     {
@@ -598,9 +587,6 @@ public sealed class WindowPlacementService : IDisposable
 
         [DllImport("user32.dll", CharSet = CharSet.Auto)]
         public static extern int GetClassName(IntPtr hWnd, StringBuilder lpClassName, int nMaxCount);
-
-        [DllImport("user32.dll")]
-        public static extern uint GetWindowThreadProcessId(IntPtr hWnd, out uint lpdwProcessId);
 
         [DllImport("shell32.dll")]
         public static extern uint SHAppBarMessage(uint dwMessage, ref AppBarData pData);
